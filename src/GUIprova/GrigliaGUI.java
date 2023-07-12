@@ -27,6 +27,8 @@ public class GrigliaGUI {
     private final int BOLD=3;
     private final Color colorBordo= new Color(0,0,0);
 
+
+
     public GrigliaGUI(int n) {
 
         AscoltatoreEventi actListener = new AscoltatoreEventi();
@@ -209,8 +211,6 @@ public class GrigliaGUI {
 
     class AscoltatoreEventi implements ActionListener {
 
-        Color colorBordo= new Color(0,0,0);
-        Finestra f;
         public void actionPerformed(ActionEvent a) {
 
             if(a.getSource()==inserisci) {

@@ -1,6 +1,7 @@
 package strategy_boarders;
 
 import GUIprova.GrigliaGUI;
+import risolutore.Coordinate;
 
 import javax.swing.border.AbstractBorder;
 import javax.swing.border.MatteBorder;
@@ -13,6 +14,12 @@ public class MyBoarder extends AbstractBorder {
     public MyBoarder(GrigliaGUI griglia)
     {
         this.griglia=griglia;
+    }
+
+    private void inserisciBordi(Coordinate cur) {
+
+
+
     }
 
 
