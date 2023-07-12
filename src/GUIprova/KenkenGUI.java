@@ -62,9 +62,18 @@ class Finestra extends JFrame
                     }
                 }
                 gruppoTmp.setVincolo(vincolo);
-                String operazione= JOptionPane.showInputDialog("Fornire l'operazione: <+><-><%><x>");
-                //TODO controllo operazione ammessa con regex
-                gruppoTmp.setOperazione(operazione);
+                if(gruppoTmp.getListaCelle().size()>1) {
+                    for(;;) {
+                        String operazione = JOptionPane.showInputDialog("Fornire l'operazione: <+><-><%><x>");
+                        if (operazione.matches("[+\\-%x]")) {
+                            gruppoTmp.setOperazione(operazione);
+                            break;
+                        }
+                        else
+                            JOptionPane.showMessageDialog(pannelloGriglia,
+                                    "Inserire operazione valida!  <+><-><%><x>");
+                    }
+                }
                 for(Coordinate c:gruppoTmp.getListaCelle())
                 {
                     int j=c.getColonna();
@@ -374,11 +383,14 @@ class Finestra extends JFrame
 public class KenkenGUI
 {
     private static final int DEFAULT=4;
+    private static Finestra finestra;
 
     public static void main(String[] args)
     {
-        Finestra finestra = new Finestra(DEFAULT);
+        finestra = new Finestra(DEFAULT);
         finestra.setVisible(true);
         finestra.setResizable(false);
     }
+
+
 }
