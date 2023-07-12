@@ -20,7 +20,7 @@ public class GrigliaGUI {
     private KenkenGrid kenken;
     private JTextField[][] grigliaTxt;
     private boolean[][] cellaImpostata;
-    private JMenuItem inserisci;
+    private JMenuItem inserisci, redo, undo, cancel;
     private JPopupMenu popup;
     private Gruppo gruppoTmp;
     private boolean gruppoInserito;
@@ -156,6 +156,15 @@ public class GrigliaGUI {
         inserisci = new JMenuItem("inserisci");
         inserisci.addActionListener(ascoltatore);
         popup.add(inserisci);
+        cancel = new JMenuItem("cancel");
+        cancel.addActionListener(ascoltatore);
+        popup.add(cancel);
+        undo = new JMenuItem("undo");
+        undo.addActionListener(ascoltatore);
+        popup.add(undo);
+        redo = new JMenuItem("redo");
+        redo.addActionListener(ascoltatore);
+        popup.add(redo);
         pannelloGriglia.setComponentPopupMenu(popup);
     }
 

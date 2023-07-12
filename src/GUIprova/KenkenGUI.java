@@ -1,19 +1,9 @@
 package GUIprova;
 
-import risolutore.Coordinate;
-import risolutore.Gruppo;
-import risolutore.KenkenGrid;
-
 import javax.swing.*;
-import javax.swing.border.MatteBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.LinkedList;
 
 class Finestra extends JFrame
 {
@@ -39,7 +29,6 @@ class Finestra extends JFrame
 
     class AscoltatoreEventi implements ActionListener
     {
-        Color colorBordo= new Color(0,0,0);
         Finestra f;
         public void actionPerformed(ActionEvent a) {
 
@@ -58,8 +47,6 @@ class Finestra extends JFrame
         }
     }
 
-
-
     public Finestra(int n)
     {
         setTitle("KenkenGUI ");
@@ -67,16 +54,46 @@ class Finestra extends JFrame
 
         this.n=n;
         grigliaGUI= new GrigliaGUI(n);
-
         pannelloGriglia= grigliaGUI.getPannelloGriglia();
-        pannelloPulsanti=new JPanel();
 
+        costruisciPannelloPulsanti(actListener);
         costruisciMenu(actListener);
+
         add(pannelloGriglia, BorderLayout.CENTER);
         add(pannelloPulsanti, BorderLayout.EAST);
-        setSize(400, 400);
+        setSize(480, 400);
         setLocation(0, 0);
         state.terminaConfigurazione(this);
+    }
+
+    private void costruisciPannelloPulsanti(AscoltatoreEventi actListener) {
+        pannelloPulsanti=new JPanel();
+        plsStart = new JButton("START");
+        plsStart.setFont(new Font("Franklin Gothic Medium Cond", Font.BOLD, 14));
+        plsStart.addActionListener(actListener);
+        plsStart.setEnabled(false);
+
+        plsPrev = new JButton("PREVIOUS");
+        plsPrev.setFont(new Font("Franklin Gothic Medium Cond", Font.BOLD, 14));
+        plsPrev.addActionListener(actListener);
+        plsPrev.setEnabled(false);
+
+        plsNext = new JButton("NEXT");
+        plsNext.setFont(new Font("Franklin Gothic Medium Cond", Font.BOLD, 14));
+        plsNext.addActionListener(actListener);
+        plsNext.setEnabled(false);
+
+        plsCheck = new JButton("CHECK");
+        plsCheck.setFont(new Font("Franklin Gothic Medium Cond", Font.BOLD, 14));
+        plsCheck.addActionListener(actListener);
+        plsCheck.setEnabled(false);
+
+        pannelloPulsanti.setLayout(new GridLayout(4, 1, 10, 10));
+        pannelloPulsanti.setSize(100, 400);
+        pannelloPulsanti.add(plsStart);
+        pannelloPulsanti.add(plsPrev);
+        pannelloPulsanti.add(plsNext);
+        pannelloPulsanti.add(plsCheck);
     }
 
     private void costruisciMenu(ActionListener ascoltatore) {

@@ -2,7 +2,6 @@ package risolutore;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class KenkenGrid extends Problema<Integer,Integer>{
 
@@ -13,18 +12,11 @@ public class KenkenGrid extends Problema<Integer,Integer>{
     private LinkedList<Gruppo> listaGruppi;
 
 
-    //private ArrayList<Integer>listaPuntiDiScelta;
-
     public KenkenGrid(int dim)
     {
         this.dim=dim;
         this.griglia= new int[dim][dim];
 
-        /*
-        listaPuntiDiScelta=new ArrayList<>();
-        for(int i=0;i<=(dim*dim)-1;i++)
-            listaPuntiDiScelta.add(i);
-         */
         nrSol=0;
         listaSoluzioni=new ArrayList<>();
         listaGruppi= new LinkedList<>();
@@ -72,9 +64,7 @@ public class KenkenGrid extends Problema<Integer,Integer>{
                 &&verificaGruppo(puntoDiScelta,scelta)
                 &&griglia[puntoDiScelta/dim][puntoDiScelta%dim]==0
                 &&scelta>0&&scelta<=dim;
-        
     }
-
 
     @Override
     protected void assegna(Integer scelta, Integer puntoDiScelta) {
@@ -155,8 +145,6 @@ public class KenkenGrid extends Problema<Integer,Integer>{
                     risultato = ordina(griglia[c.getRiga()][c.getColonna()],risultato,gruppo.getOperazione());
                 if (gruppo.getOperazione().equals("x"))
                     risultato *= griglia[c.getRiga()][c.getColonna()];
-
-
             }
         }
         return risultato==gruppo.getVincolo();
@@ -202,6 +190,7 @@ public class KenkenGrid extends Problema<Integer,Integer>{
         LinkedList<Coordinate> l2= new LinkedList<>();
         LinkedList<Coordinate> l3= new LinkedList<>();
         LinkedList<Coordinate> l4= new LinkedList<>();
+        LinkedList<Coordinate> l5= new LinkedList<>();
         l1.add(c1);l1.add(c0);
         l2.add(c2); l2.add(c5);
         l3.add(c3); l3.add(c4); l3.add(c6);
