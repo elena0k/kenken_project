@@ -27,8 +27,10 @@ public class GrigliaGUI {
     private final int BOLD=3;
     private final Color colorBordo= new Color(0,0,0);
 
-    public GrigliaGUI(int n)
-    {
+    public GrigliaGUI(int n) {
+
+        AscoltatoreEventi actListener = new AscoltatoreEventi();
+
         this.n=n;
         kenken= new KenkenGrid(n);
         grigliaTxt =new JTextField[n][n];
@@ -36,7 +38,7 @@ public class GrigliaGUI {
         pannelloGriglia= new JPanel();
         pannelloGriglia.setLayout(new GridLayout(n, n));
         pannelloGriglia.setSize(450, 450);
-
+        gruppoInserito=false;
 
         MatteBorder border= new MatteBorder(1,1,1,1,colorBordo);
         for (int i = 0; i < n; i++) {
@@ -46,41 +48,43 @@ public class GrigliaGUI {
 
                 grigliaTxt[i][j].setBorder(border);
                 grigliaTxt[i][j].setEnabled(false);
-                //TODO ascoltatore
                 grigliaTxt[i][j].addMouseListener(new MouseAdapter(){
                     public void mouseClicked(MouseEvent e) {
                         System.out.println("dio banana");
                         boolean primoElemento=false;
-                        if(! gruppoInserito) {
-                            gruppoTmp = new Gruppo();
-                            gruppoInserito = true;
-                            primoElemento=true;
-                        }
-                        for(int i=0; i<n;i++)
-                        {
-                            for(int j=0; j<n; j++)
-                            {
-                                if(e.getSource()  ==grigliaTxt[i][j])
-                                {
+
+                        if(e.getButton() == MouseEvent.BUTTON3)
+                                popup.show(e.getComponent(), e.getX(), e.getY());
+
+                        for(int i=0; i<n;i++) {
+                            for(int j=0; j<n; j++) {
+                                if(gruppoInserito)
+                                    inserisci.setEnabled(true);
+                                else
+                                    inserisci.setEnabled(false);
+
+                                if(e.getSource()  ==grigliaTxt[i][j]) {
                                     if (e.getButton() == MouseEvent.BUTTON1) {
+                                        if(! gruppoInserito) {
+                                            gruppoTmp = new Gruppo();
+                                            primoElemento=true;
+                                        }
                                         if(!cellaImpostata[i][j]) {
                                             if (adiacenti(new Coordinate(i, j), gruppoTmp.getListaCelle()) || primoElemento) {
+                                                gruppoInserito = true;
                                                 grigliaTxt[i][j].setBackground(new Color(230, 230, 230));
                                                 gruppoTmp.addCella(i, j);
                                                 cellaImpostata[i][j] = true;
-                                                System.out.println("impostata cella:<" + i + ":" + j);
+                                                System.out.println("impostata cella:<" + i + ":" + j+">");
                                                 primoElemento = false;
                                             }
+                                            else primoElemento=false;
                                         }
-                                    }else primoElemento=false;
-                                }
-                                else if(e.getButton() == MouseEvent.BUTTON3) {
-                                    popup.show(e.getComponent(), e.getX(), e.getY());
+                                    }
                                 }
                             }
                         }
                     }
-
                 });
 
                 impostaFont(i,j);
@@ -91,13 +95,12 @@ public class GrigliaGUI {
 
 
         }
-        //TODO actionListener con bordi
-        //costruisciMenu(actListener);
+        costruisciMenu(actListener);
     }
 
     private boolean adiacenti(Coordinate cur, LinkedList<Coordinate> listaCelle) {
-        for(Coordinate c:listaCelle)
-        {
+
+        for(Coordinate c:listaCelle) {
             if(adiacenteDx(c,cur) || adiacenteSx(c,cur) || adiacenteUp(c,cur) || adiacenteDown(c,cur))
                 return true;
         }
@@ -120,8 +123,8 @@ public class GrigliaGUI {
         return c.getRiga()==cur.getRiga() && c.getColonna()+1==cur.getColonna();
     }
 
-    private Coordinate[] listaAdiacenti(Coordinate c)
-    {
+    private Coordinate[] listaAdiacenti(Coordinate c) {
+
         Coordinate[] ret= new Coordinate[4];
         Coordinate top= new Coordinate(c.getRiga()-1, c.getColonna());
         if(top.getRiga()>=0)
@@ -164,12 +167,10 @@ public class GrigliaGUI {
 
     }
 
-    private boolean isConfigurata()
-    {
-        for(int i=0; i<n; i++)
-        {
-            for(int j=0; j<n; j++)
-            {
+    private boolean isConfigurata() {
+
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<n; j++) {
                 if (!cellaImpostata[i][j])
                     return false;
             }
@@ -177,8 +178,8 @@ public class GrigliaGUI {
         return true;
     }
 
-    private void inserisciBordi(Coordinate cur)
-    {
+    private void inserisciBordi(Coordinate cur) {
+
         int borderDown=1;
         int borderUp=1;
         int borderSx=1;
@@ -197,18 +198,16 @@ public class GrigliaGUI {
 
     }
 
-    class AscoltatoreEventi implements ActionListener
-    {
+    class AscoltatoreEventi implements ActionListener {
+
         Color colorBordo= new Color(0,0,0);
         Finestra f;
         public void actionPerformed(ActionEvent a) {
 
-            if(a.getSource()==inserisci)
-            {
+            if(a.getSource()==inserisci) {
                 gruppoInserito=false;
                 int vincolo;
-                for(;;)
-                {
+                for(;;) {
                     String input = JOptionPane.showInputDialog("Fornire il valore intero del vincolo");
                     try {
                         vincolo =Integer.parseInt(input);
@@ -230,8 +229,7 @@ public class GrigliaGUI {
                                     "Inserire operazione valida!  <+><-><%><x>");
                     }
                 }
-                for(Coordinate c:gruppoTmp.getListaCelle())
-                {
+                for(Coordinate c:gruppoTmp.getListaCelle()) {
                     int j=c.getColonna();
                     int i=c.getRiga();
                     grigliaTxt[i][j].setBackground(new Color(255,255,255));
@@ -239,10 +237,7 @@ public class GrigliaGUI {
                 }
                 kenken.addGroup(gruppoTmp);
                 System.out.println(gruppoTmp);
-
             }
         }
     }
-
-
 }
