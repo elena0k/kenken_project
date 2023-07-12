@@ -21,8 +21,8 @@ class Finestra extends JFrame
     private int n;
     private KenkenGrid kenken;
     private JTextField[][] grigliaTxt;
-
     private boolean[][] cellaImpostata;
+
     private JMenuItem jmiApri, jmiSalva, jmiSalvaConNome,
             jmiHelp, jmiEsci,inserisci, celle3,celle4,celle5,celle6;
     private JPanel pannelloGriglia;
