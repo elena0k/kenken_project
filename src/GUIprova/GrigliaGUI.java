@@ -1,6 +1,8 @@
 package GUIprova;
 
-import decoratorCelle.Cella;
+import decoratorCelle.CellaSemplice;
+import decoratorCelle.CellaIndexDecorator;
+import decoratorCelle.ICella;
 import risolutore.Coordinate;
 import risolutore.Gruppo;
 import risolutore.KenkenGrid;
@@ -20,7 +22,7 @@ public class GrigliaGUI {
     private JPanel pannelloGriglia;
     private int n;
     private KenkenGrid kenken;
-    private Cella[][] grigliaTxt;
+    private ICella[][] grigliaCelle;
     private boolean[][] cellaImpostata;
     private JMenuItem inserisci, redo, undo, cancel;
     private JPopupMenu popup;
@@ -37,7 +39,7 @@ public class GrigliaGUI {
 
         this.n=n;
         kenken= new KenkenGrid(n);
-        grigliaTxt =new Cella[n][n];
+        grigliaCelle =new CellaSemplice[n][n];
         resetConfigurazione();
         pannelloGriglia= new JPanel();
         pannelloGriglia.setLayout(new GridLayout(n, n));
@@ -47,12 +49,12 @@ public class GrigliaGUI {
         MatteBorder border= new MatteBorder(1,1,1,1,colorBordo);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                grigliaTxt[i][j] = new Cella();
+                grigliaCelle[i][j] = new CellaSemplice();
                 //grigliaTxt[i][j].setSize(50, 50);
 
-                grigliaTxt[i][j].mySetBorder(border);
-                grigliaTxt[i][j].setEnabled(true);
-                grigliaTxt[i][j].setMouseAdapter((new MouseAdapter(){
+                grigliaCelle[i][j].mySetBorder(border);
+                grigliaCelle[i][j].setEnabled(true);
+                grigliaCelle[i][j].setMouseAdapter((new MouseAdapter(){
                     public void mouseClicked(MouseEvent e) {
                         System.out.println("dio banana");
                         boolean primoElemento=false;
@@ -67,7 +69,7 @@ public class GrigliaGUI {
                                 else
                                     inserisci.setEnabled(false);
 
-                                if(e.getSource()==grigliaTxt[i][j].getText()) {
+                                if(e.getSource()== grigliaCelle[i][j].getText()) {
                                     if (e.getButton() == MouseEvent.BUTTON1) {
                                         if(! gruppoInserito) {
                                             gruppoTmp = new Gruppo();
@@ -76,7 +78,7 @@ public class GrigliaGUI {
                                         if(!cellaImpostata[i][j]) {
                                             if (adiacenti(new Coordinate(i, j), gruppoTmp.getListaCelle()) || primoElemento) {
                                                 gruppoInserito = true;
-                                                grigliaTxt[i][j].getText().setBackground(new Color(210, 210, 210));
+                                                grigliaCelle[i][j].getText().setBackground(new Color(210, 210, 210));
                                                 gruppoTmp.addCella(i, j);
                                                 cellaImpostata[i][j] = true;
                                                 System.out.println("impostata cella:<" + i + ":" + j+">");
@@ -94,7 +96,7 @@ public class GrigliaGUI {
                 impostaFont(i,j);
 
                 //grigliaTxt[i][j].setHorizontalAlignment(JTextField.CENTER);
-                pannelloGriglia.add(grigliaTxt[i][j]);
+                pannelloGriglia.add((Component) grigliaCelle[i][j]);
             }
 
 
@@ -174,9 +176,9 @@ public class GrigliaGUI {
 
     private void impostaFont(int i, int j) {
         if(n==6 || n==5)
-            grigliaTxt[i][j].getText().setFont(new Font("Courier New", Font.BOLD, 20));
+            grigliaCelle[i][j].getText().setFont(new Font("Courier New", Font.BOLD, 20));
         else if(n==3 || n==4)
-            grigliaTxt[i][j].getText().setFont(new Font("Courier New", Font.BOLD, 35));
+            grigliaCelle[i][j].getText().setFont(new Font("Courier New", Font.BOLD, 35));
 
     }
 
@@ -207,7 +209,7 @@ public class GrigliaGUI {
         if(!gruppoTmp.contains(adiacenti[3]))//right
             borderDx=BOLD;
         MatteBorder border= new MatteBorder(borderUp,borderSx,borderDown,borderDx,colorBordo);
-        grigliaTxt[cur.getRiga()][cur.getColonna()].mySetBorder(border);
+        grigliaCelle[cur.getRiga()][cur.getColonna()].mySetBorder(border);
 
     }
 
@@ -258,14 +260,18 @@ public class GrigliaGUI {
                 for(Coordinate c:gruppoTmp.getListaCelle()) {
                     int j=c.getColonna();
                     int i=c.getRiga();
-                    grigliaTxt[i][j].getText().setBackground(new Color(255,255,255));
+                    grigliaCelle[i][j].getText().setBackground(Color.WHITE);
                     inserisciBordi(c);
                 }
                 kenken.addGroup(gruppoTmp);
-                Coordinate coordinateIndice =eleggiIndice(gruppoTmp);
+                Coordinate coordVincolo =eleggiIndice(gruppoTmp);
 
-                System.out.println("cellaIndice: "+coordinateIndice);
+                ICella cellaSemplice=grigliaCelle[coordVincolo.getRiga()][coordVincolo.getColonna()];
+                System.out.println("cellaIndice: "+coordVincolo);
                 System.out.println(gruppoTmp);
+                grigliaCelle[coordVincolo.getRiga()][coordVincolo.getColonna()]=new CellaIndexDecorator(cellaSemplice);
+
+
             }
         }
     }

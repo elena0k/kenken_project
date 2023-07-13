@@ -5,16 +5,16 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 
-public class Cella extends JPanel implements ICella {
+public class CellaSemplice extends JPanel implements ICella {
 
     private JTextField text;
 
-    public Cella() {
+    public CellaSemplice() {
 
-        setText();
+        setTextLayoutConfig();
     }
 
-    public void setText()
+    public void setTextLayoutConfig()
     {
         System.out.println("dio banana 2");
         text=new JTextField();
@@ -30,6 +30,7 @@ public class Cella extends JPanel implements ICella {
         else if(n==3 || n==4)
             text.setFont(new Font("Courier New", Font.BOLD, 35));
     }
+
 
     public JTextField getText()
     {
