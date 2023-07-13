@@ -5,25 +5,22 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 
-public class CellaSemplice extends JPanel implements ICella {
+public class CellaSemplice extends JPanel implements ComponentCella {
 
     private JTextField text;
 
     public CellaSemplice() {
-
-        setTextLayoutConfig();
-    }
-
-    public void setTextLayoutConfig()
-    {
-        System.out.println("dio banana 2");
         text=new JTextField();
-        setLayout(new BorderLayout());
-        text.setHorizontalAlignment(JTextField.CENTER);
-        add(text, BorderLayout.CENTER);
     }
 
-    @Override
+    public void draw() {
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().add(panel);
+        frame.pack();
+        frame.setVisible(true);
+    }
+
     public void setFont(int n) {
         if(n==6 || n==5)
             text.setFont(new Font("Courier New", Font.BOLD, 20));
@@ -39,17 +36,14 @@ public class CellaSemplice extends JPanel implements ICella {
 
 
 
-    public void setEnabled(boolean bool)
-    {
-        text.setEnabled(bool);
-    }
 
-    public void mySetBorder(Border border)
-    {
-        text.setBorder(border);
-    }
 
-    public void setMouseAdapter(MouseAdapter mouseAdapter) {
-        text.addMouseListener(mouseAdapter);
+
+    @Override
+    public void impostaTextField() {
+
+        setLayout(new BorderLayout());
+        text.setHorizontalAlignment(JTextField.CENTER);
+        add(text, BorderLayout.CENTER);
     }
 }

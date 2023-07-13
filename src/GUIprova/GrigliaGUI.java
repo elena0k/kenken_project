@@ -2,7 +2,7 @@ package GUIprova;
 
 import decoratorCelle.CellaSemplice;
 import decoratorCelle.CellaIndexDecorator;
-import decoratorCelle.ICella;
+import decoratorCelle.ComponentCella;
 import risolutore.Coordinate;
 import risolutore.Gruppo;
 import risolutore.KenkenGrid;
@@ -22,7 +22,7 @@ public class GrigliaGUI {
     private JPanel pannelloGriglia;
     private int n;
     private KenkenGrid kenken;
-    private ICella[][] grigliaCelle;
+    private ComponentCella[][] grigliaCelle;
     private boolean[][] cellaImpostata;
     private JMenuItem inserisci, redo, undo, cancel;
     private JPopupMenu popup;
@@ -96,7 +96,7 @@ public class GrigliaGUI {
                 impostaFont(i,j);
 
                 //grigliaTxt[i][j].setHorizontalAlignment(JTextField.CENTER);
-                pannelloGriglia.add((Component) grigliaCelle[i][j]);
+                pannelloGriglia.add((java.awt.Component) grigliaCelle[i][j]);
             }
 
 
@@ -266,7 +266,7 @@ public class GrigliaGUI {
                 kenken.addGroup(gruppoTmp);
                 Coordinate coordVincolo =eleggiIndice(gruppoTmp);
 
-                ICella cellaSemplice=grigliaCelle[coordVincolo.getRiga()][coordVincolo.getColonna()];
+                ComponentCella cellaSemplice=grigliaCelle[coordVincolo.getRiga()][coordVincolo.getColonna()];
                 System.out.println("cellaIndice: "+coordVincolo);
                 System.out.println(gruppoTmp);
                 grigliaCelle[coordVincolo.getRiga()][coordVincolo.getColonna()]=new CellaIndexDecorator(cellaSemplice);
