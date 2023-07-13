@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
+import java.util.List;
 
 public class GrigliaGUI {
 
@@ -47,11 +48,11 @@ public class GrigliaGUI {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 grigliaTxt[i][j] = new Cella();
-                grigliaTxt[i][j].setSize(50, 50);
+                //grigliaTxt[i][j].setSize(50, 50);
 
-                grigliaTxt[i][j].setBorder(border);
-                grigliaTxt[i][j].getText().setEnabled(false);
-                grigliaTxt[i][j].getText().addMouseListener(new MouseAdapter(){
+                grigliaTxt[i][j].mySetBorder(border);
+                grigliaTxt[i][j].setEnabled(true);
+                grigliaTxt[i][j].setMouseAdapter((new MouseAdapter(){
                     public void mouseClicked(MouseEvent e) {
                         System.out.println("dio banana");
                         boolean primoElemento=false;
@@ -66,7 +67,7 @@ public class GrigliaGUI {
                                 else
                                     inserisci.setEnabled(false);
 
-                                if(e.getSource()  ==grigliaTxt[i][j].getText()) {
+                                if(e.getSource()==grigliaTxt[i][j].getText()) {
                                     if (e.getButton() == MouseEvent.BUTTON1) {
                                         if(! gruppoInserito) {
                                             gruppoTmp = new Gruppo();
@@ -88,7 +89,7 @@ public class GrigliaGUI {
                             }
                         }
                     }
-                });
+                }));
 
                 impostaFont(i,j);
 
@@ -206,8 +207,23 @@ public class GrigliaGUI {
         if(!gruppoTmp.contains(adiacenti[3]))//right
             borderDx=BOLD;
         MatteBorder border= new MatteBorder(borderUp,borderSx,borderDown,borderDx,colorBordo);
-        grigliaTxt[cur.getRiga()][cur.getColonna()].setBorder(border);
+        grigliaTxt[cur.getRiga()][cur.getColonna()].mySetBorder(border);
 
+    }
+
+    private Coordinate eleggiIndice(Gruppo gruppo)
+    {
+        List<Coordinate> listaCelle=gruppo.getListaCelle();
+        int minR =listaCelle.get(0).getRiga();
+        int minC=listaCelle.get(0).getColonna();
+        for(Coordinate c:listaCelle)
+        {
+            if(c.getRiga()< minR && c.getColonna()<minC) {
+                minR = c.getRiga();
+                minC = c.getColonna();
+            }
+        }
+        return new Coordinate(minR,minC);
     }
 
     class AscoltatoreEventi implements ActionListener {
@@ -246,6 +262,9 @@ public class GrigliaGUI {
                     inserisciBordi(c);
                 }
                 kenken.addGroup(gruppoTmp);
+                Coordinate coordinateIndice =eleggiIndice(gruppoTmp);
+
+                System.out.println("cellaIndice: "+coordinateIndice);
                 System.out.println(gruppoTmp);
             }
         }

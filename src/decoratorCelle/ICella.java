@@ -7,4 +7,6 @@ public interface ICella {
     JTextField getText();
     void setText();
     void setFont(int n);
+
+
 }
