@@ -1,5 +1,6 @@
 package GUIprova;
 
+import decoratorCelle.Cella;
 import risolutore.Coordinate;
 import risolutore.Gruppo;
 import risolutore.KenkenGrid;
@@ -18,7 +19,7 @@ public class GrigliaGUI {
     private JPanel pannelloGriglia;
     private int n;
     private KenkenGrid kenken;
-    private JTextField[][] grigliaTxt;
+    private Cella[][] grigliaTxt;
     private boolean[][] cellaImpostata;
     private JMenuItem inserisci, redo, undo, cancel;
     private JPopupMenu popup;
@@ -35,7 +36,7 @@ public class GrigliaGUI {
 
         this.n=n;
         kenken= new KenkenGrid(n);
-        grigliaTxt =new JTextField[n][n];
+        grigliaTxt =new Cella[n][n];
         resetConfigurazione();
         pannelloGriglia= new JPanel();
         pannelloGriglia.setLayout(new GridLayout(n, n));
@@ -45,12 +46,12 @@ public class GrigliaGUI {
         MatteBorder border= new MatteBorder(1,1,1,1,colorBordo);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                grigliaTxt[i][j] = new JTextField("");
+                grigliaTxt[i][j] = new Cella();
                 grigliaTxt[i][j].setSize(50, 50);
 
                 grigliaTxt[i][j].setBorder(border);
-                grigliaTxt[i][j].setEnabled(false);
-                grigliaTxt[i][j].addMouseListener(new MouseAdapter(){
+                grigliaTxt[i][j].getText().setEnabled(false);
+                grigliaTxt[i][j].getText().addMouseListener(new MouseAdapter(){
                     public void mouseClicked(MouseEvent e) {
                         System.out.println("dio banana");
                         boolean primoElemento=false;
@@ -65,7 +66,7 @@ public class GrigliaGUI {
                                 else
                                     inserisci.setEnabled(false);
 
-                                if(e.getSource()  ==grigliaTxt[i][j]) {
+                                if(e.getSource()  ==grigliaTxt[i][j].getText()) {
                                     if (e.getButton() == MouseEvent.BUTTON1) {
                                         if(! gruppoInserito) {
                                             gruppoTmp = new Gruppo();
@@ -74,7 +75,7 @@ public class GrigliaGUI {
                                         if(!cellaImpostata[i][j]) {
                                             if (adiacenti(new Coordinate(i, j), gruppoTmp.getListaCelle()) || primoElemento) {
                                                 gruppoInserito = true;
-                                                grigliaTxt[i][j].setBackground(new Color(230, 230, 230));
+                                                grigliaTxt[i][j].getText().setBackground(new Color(210, 210, 210));
                                                 gruppoTmp.addCella(i, j);
                                                 cellaImpostata[i][j] = true;
                                                 System.out.println("impostata cella:<" + i + ":" + j+">");
@@ -91,7 +92,7 @@ public class GrigliaGUI {
 
                 impostaFont(i,j);
 
-                grigliaTxt[i][j].setHorizontalAlignment(JTextField.CENTER);
+                //grigliaTxt[i][j].setHorizontalAlignment(JTextField.CENTER);
                 pannelloGriglia.add(grigliaTxt[i][j]);
             }
 
@@ -172,9 +173,9 @@ public class GrigliaGUI {
 
     private void impostaFont(int i, int j) {
         if(n==6 || n==5)
-            grigliaTxt[i][j].setFont(new Font("Courier New", Font.BOLD, 20));
+            grigliaTxt[i][j].getText().setFont(new Font("Courier New", Font.BOLD, 20));
         else if(n==3 || n==4)
-            grigliaTxt[i][j].setFont(new Font("Courier New", Font.BOLD, 35));
+            grigliaTxt[i][j].getText().setFont(new Font("Courier New", Font.BOLD, 35));
 
     }
 
@@ -241,7 +242,7 @@ public class GrigliaGUI {
                 for(Coordinate c:gruppoTmp.getListaCelle()) {
                     int j=c.getColonna();
                     int i=c.getRiga();
-                    grigliaTxt[i][j].setBackground(new Color(255,255,255));
+                    grigliaTxt[i][j].getText().setBackground(new Color(255,255,255));
                     inserisciBordi(c);
                 }
                 kenken.addGroup(gruppoTmp);
