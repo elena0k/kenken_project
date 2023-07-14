@@ -1,5 +1,8 @@
 package risolutore;
 
+import componenti.Coordinate;
+import componenti.Gruppo;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 

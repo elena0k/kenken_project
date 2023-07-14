@@ -1,10 +1,8 @@
 package GUIprova;
 
-import decoratorCelle.CellaSemplice;
-import decoratorCelle.CellaIndexDecorator;
-import decoratorCelle.ICella;
-import risolutore.Coordinate;
-import risolutore.Gruppo;
+import componenti.Cella;
+import componenti.Coordinate;
+import componenti.Gruppo;
 import risolutore.KenkenGrid;
 
 import javax.swing.*;
@@ -22,73 +20,86 @@ public class GrigliaGUI {
     private JPanel pannelloGriglia;
     private int n;
     private KenkenGrid kenken;
-    private ICella[][] grigliaCelle;
+    private Cella[][] grigliaCelle;
     private boolean[][] cellaImpostata;
     private JMenuItem inserisci, redo, undo, cancel;
     private JPopupMenu popup;
     private Gruppo gruppoTmp;
     private boolean gruppoInserito;
-    private State state=new Configurazione();
+    private State state=new ConfigState();
     private final int BOLD=3;
-    private final Color colorBordo= new Color(0,0,0);
 
 
 
     public GrigliaGUI(int n) {
 
         AscoltatoreEventi actListener = new AscoltatoreEventi();
-
         this.n=n;
         kenken= new KenkenGrid(n);
-        grigliaCelle =new CellaSemplice[n][n];
-        state=new Configurazione();
+        grigliaCelle =new Cella[n][n];
+        state=new ConfigState();
         resetConfigurazione();
         pannelloGriglia= new JPanel();
         pannelloGriglia.setLayout(new GridLayout(n, n));
         pannelloGriglia.setSize(450, 450);
         gruppoInserito=false;
 
-
-
-        MatteBorder border= new MatteBorder(1,1,1,1,colorBordo);
+        MatteBorder border= new MatteBorder(1,1,1,1,Color.black);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                grigliaCelle[i][j] = new CellaSemplice();
+                grigliaCelle[i][j] = new Cella();
+                impostaFont(i,j);
                 grigliaCelle[i][j].mySetBorder(border);
+                pannelloGriglia.add((Component) grigliaCelle[i][j]);
+            }
+        }
+        state.intercettaClick(this);
+        costruisciMenu(actListener);
+    }
 
-                //TODO
+
+
+    public void setState(State state)
+    {
+        this.state=state;
+    }
+
+    protected void impostaGruppi()
+    {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+
                 grigliaCelle[i][j].setEnabled(false);
-                grigliaCelle[i][j].setMouseAdapter((new MouseAdapter(){
+                grigliaCelle[i][j].setMouseAdapter((new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         System.out.println("dio banana");
-                        boolean primoElemento=false;
+                        boolean primoElemento = false;
 
-                        if(e.getButton() == MouseEvent.BUTTON3)
-                                popup.show(e.getComponent(), e.getX(), e.getY());
+                        if (e.getButton() == MouseEvent.BUTTON3)
+                            popup.show(e.getComponent(), e.getX(), e.getY());
 
-                        for(int i=0; i<n;i++) {
-                            for(int j=0; j<n; j++) {
-                                if(gruppoInserito)
+                        for (int i = 0; i < n; i++) {
+                            for (int j = 0; j < n; j++) {
+                                if (gruppoInserito)
                                     inserisci.setEnabled(true);
                                 else
                                     inserisci.setEnabled(false);
 
-                                if(e.getSource()== grigliaCelle[i][j].getText()) {
+                                if (e.getSource() == grigliaCelle[i][j].getText()) {
                                     if (e.getButton() == MouseEvent.BUTTON1) {
-                                        if(! gruppoInserito) {
+                                        if (!gruppoInserito) {
                                             gruppoTmp = new Gruppo();
-                                            primoElemento=true;
+                                            primoElemento = true;
                                         }
-                                        if(!cellaImpostata[i][j]) {
+                                        if (!cellaImpostata[i][j]) {
                                             if (adiacenti(new Coordinate(i, j), gruppoTmp.getListaCelle()) || primoElemento) {
                                                 gruppoInserito = true;
                                                 grigliaCelle[i][j].getText().setBackground(new Color(210, 210, 210));
                                                 gruppoTmp.addCella(i, j);
                                                 cellaImpostata[i][j] = true;
-                                                System.out.println("impostata cella:<" + i + ":" + j+">");
+                                                System.out.println("impostata cella:<" + i + ":" + j + ">");
                                                 primoElemento = false;
-                                            }
-                                            else primoElemento=false;
+                                            } else primoElemento = false;
                                         }
                                     }
                                 }
@@ -96,40 +107,10 @@ public class GrigliaGUI {
                         }
                     }
                 }));
-
-                impostaFont(i,j);
-                pannelloGriglia.add((Component) grigliaCelle[i][j]);
             }
-
-
         }
-        costruisciMenu(actListener);
     }
 
-    protected ICella[][] getGrigliaCelle()
-    {
-        return grigliaCelle;
-    }
-
-    protected boolean[][] getCellaImpostata()
-    {
-        return cellaImpostata;
-    }
-
-    protected boolean getGruppoInserito()
-    {
-        return gruppoInserito;
-    }
-
-    protected void setGruppoInserito(boolean bool)
-    {
-        gruppoInserito=bool;
-    }
-
-    public void setState(State state)
-    {
-        this.state=state;
-    }
 
     public int getN(){return this.n;}
 
@@ -182,7 +163,7 @@ public class GrigliaGUI {
         cellaImpostata= new boolean[n][n];
     }
 
-    JPanel getPannelloGriglia() {
+    protected JPanel getPannelloGriglia() {
         return this.pannelloGriglia;
     }
 
@@ -237,7 +218,7 @@ public class GrigliaGUI {
             borderDown=BOLD;
         if(!gruppoTmp.contains(adiacenti[3]))//right
             borderDx=BOLD;
-        MatteBorder border= new MatteBorder(borderUp,borderSx,borderDown,borderDx,colorBordo);
+        MatteBorder border= new MatteBorder(borderUp,borderSx,borderDown,borderDx,Color.BLACK);
         grigliaCelle[cur.getRiga()][cur.getColonna()].mySetBorder(border);
 
     }
@@ -245,14 +226,20 @@ public class GrigliaGUI {
     private Coordinate eleggiIndice(Gruppo gruppo)
     {
         List<Coordinate> listaCelle=gruppo.getListaCelle();
-        int minR =listaCelle.get(0).getRiga();
-        int minC=listaCelle.get(0).getColonna();
+        int minR = Integer.MAX_VALUE;//listaCelle.get(0).getRiga();
+        int minC=Integer.MAX_VALUE;//listaCelle.get(0).getColonna();
         for(Coordinate c:listaCelle)
         {
             if(c.getRiga()< minR && c.getColonna()<minC) {
                 minR = c.getRiga();
                 minC = c.getColonna();
             }
+            else if(c.getRiga()==minR && c.getColonna()<minC)
+                minC=c.getColonna();
+
+            else if(c.getColonna()==minC && c.getRiga()<minR)
+                minR=c.getRiga();
+
         }
         return new Coordinate(minR,minC);
     }
@@ -274,9 +261,10 @@ public class GrigliaGUI {
                     }
                 }
                 gruppoTmp.setVincolo(vincolo);
+                String operazione="";
                 if(gruppoTmp.getListaCelle().size()>1) {
                     for(;;) {
-                        String operazione = JOptionPane.showInputDialog("Fornire l'operazione: <+><-><%><x>");
+                        operazione = JOptionPane.showInputDialog("Fornire l'operazione: <+><-><%><x>");
                         if (operazione.matches("[+\\-%x]")) {
                             gruppoTmp.setOperazione(operazione);
                             break;
@@ -294,105 +282,11 @@ public class GrigliaGUI {
                 }
                 kenken.addGroup(gruppoTmp);
                 Coordinate coordVincolo =eleggiIndice(gruppoTmp);
-                ICella cellaSemplice=grigliaCelle[coordVincolo.getRiga()][coordVincolo.getColonna()];
+                Cella cellaSemplice=grigliaCelle[coordVincolo.getRiga()][coordVincolo.getColonna()];
+                cellaSemplice.setVincolo(vincolo,operazione);
                 System.out.println("cellaIndice: "+coordVincolo);
                 System.out.println(gruppoTmp);
-                //grigliaCelle[coordVincolo.getRiga()][coordVincolo.getColonna()]=new CellaIndexDecorator(cellaSemplice);
-
-
             }
-        }
-    }
-
-    class ConfigurationState implements State{
-
-        @Override
-        public void selezionaGruppi(GrigliaGUI griglia) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-
-                    grigliaCelle[i][j].setEnabled(false);
-                    grigliaCelle[i][j].setMouseAdapter((new MouseAdapter(){
-                        public void mouseClicked(MouseEvent e) {
-
-                            boolean primoElemento=false;
-
-                            if(e.getButton() == MouseEvent.BUTTON3)
-                                popup.show(e.getComponent(), e.getX(), e.getY());
-
-                            for(int i=0; i<n;i++) {
-                                for(int j=0; j<n; j++) {
-                                    if(gruppoInserito)
-                                        inserisci.setEnabled(true);
-                                    else
-                                        inserisci.setEnabled(false);
-
-                                    if(e.getSource()== grigliaCelle[i][j].getText()) {
-                                        if (e.getButton() == MouseEvent.BUTTON1) {
-                                            if(! gruppoInserito) {
-                                                gruppoTmp = new Gruppo();
-                                                primoElemento=true;
-                                            }
-                                            if(!cellaImpostata[i][j]) {
-                                                if (adiacenti(new Coordinate(i, j), gruppoTmp.getListaCelle()) || primoElemento) {
-                                                    gruppoInserito = true;
-                                                    grigliaCelle[i][j].getText().setBackground(new Color(210, 210, 210));
-                                                    gruppoTmp.addCella(i, j);
-                                                    cellaImpostata[i][j] = true;
-                                                    System.out.println("impostata cella:<" + i + ":" + j+">");
-                                                    primoElemento = false;
-                                                }
-                                                else primoElemento=false;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }));
-
-
-                }
-            }
-        }
-
-        @Override
-        public void scriviNumero(GrigliaGUI griglia) {
-
-
-        }
-
-        @Override
-        public void resetGioco(GrigliaGUI griglia) {
-
-        }
-
-        @Override
-        public void terminaGioco(GrigliaGUI griglia) {
-
-        }
-    }
-
-    class PlayState implements State{
-
-        @Override
-        public void selezionaGruppi(GrigliaGUI griglia) {
-
-        }
-
-        @Override
-        public void scriviNumero(GrigliaGUI griglia) {
-
-        }
-
-        @Override
-        public void resetGioco(GrigliaGUI griglia) {
-
-        }
-
-        @Override
-        public void terminaGioco(GrigliaGUI griglia) {
-
         }
     }
 }

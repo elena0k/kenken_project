@@ -1,4 +1,6 @@
-package risolutore;
+package componenti;
+
+import componenti.Coordinate;
 
 import java.util.LinkedList;
 import java.util.List;

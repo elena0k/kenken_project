@@ -1,4 +1,4 @@
-package risolutore;
+package componenti;
 
 public class Coordinate {
 

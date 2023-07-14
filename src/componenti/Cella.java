@@ -1,29 +1,39 @@
-package decoratorCelle;
+package componenti;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 
-public class CellaSemplice extends JPanel implements ICella {
+public class Cella extends JPanel {
 
     private JTextField text;
+    private JTextField vincolo;
 
-    public CellaSemplice() {
+    public Cella() {
 
         setTextLayoutConfig();
+
     }
 
     public void setTextLayoutConfig()
     {
-        System.out.println("dio banana 2");
         text=new JTextField();
         setLayout(new BorderLayout());
         text.setHorizontalAlignment(JTextField.CENTER);
         add(text, BorderLayout.CENTER);
     }
 
-    @Override
+    public void setVincolo(int num, String op)
+    {
+        vincolo=new JTextField();
+        vincolo.setText(""+num+op);
+        vincolo.setEnabled(false);
+        add(vincolo,BorderLayout.NORTH);
+        repaint();
+    }
+
+
     public void setFont(int n) {
         if(n==6 || n==5)
             text.setFont(new Font("Courier New", Font.BOLD, 20));
@@ -46,7 +56,7 @@ public class CellaSemplice extends JPanel implements ICella {
 
     public void mySetBorder(Border border)
     {
-        text.setBorder(border);
+        setBorder(border);
     }
 
     public void setMouseAdapter(MouseAdapter mouseAdapter) {
