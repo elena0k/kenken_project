@@ -33,6 +33,18 @@ public class Cella extends JPanel {
         repaint();
     }
 
+    public void cleanVincolo()
+    {
+        remove(vincolo);
+        revalidate();
+        repaint();
+    }
+
+    public boolean isCellaSemplice()
+    {
+        return vincolo==null;
+    }
+
 
     public void setFont(int n) {
         if(n==6 || n==5)

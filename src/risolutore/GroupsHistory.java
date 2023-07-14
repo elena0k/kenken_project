@@ -1,35 +1,34 @@
 package risolutore;
 
-import componenti.Gruppo;
 import memento.Memento;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class GroupsHistory { //CareTaker
 
-    private Stack<Memento> history;
+    private final int capacity=100;
+    private Deque<Memento> undoHistory;
     private int currentIndex=-1;
 
     public GroupsHistory()
     {
-        history= new Stack<>();
+        undoHistory = new ArrayDeque<>();
     }
 
     public void save(Memento memento)
     {
-        history.push(memento);
+        undoHistory.push(memento);
     }
 
     public boolean canUndo() {
-        return !history.isEmpty();
+        return undoHistory.size()>0;
     }
 
     public void undo(KenkenGrid kenken) {
         if (canUndo()) {
-            history.pop();
-            kenken.setMemento(history.pop());
+            if(undoHistory.size()>1)
+                undoHistory.pop();
+            kenken.setMemento(undoHistory.pop());
         }
     }
 

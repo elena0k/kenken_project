@@ -36,8 +36,17 @@ public class KenkenGrid extends Problema<Integer,Integer> implements Originator 
 
     public void printGroups()
     {
+        System.out.println("GRUPPI:  ");
         for(Gruppo g:listaGruppi)
-            System.out.println("GRUPPI"+g+"\n");
+            System.out.println(""+g+"\n");
+    }
+
+    public List<Gruppo> getGroups(){
+        List<Gruppo> ret= new LinkedList<>();
+        for(Gruppo g:listaGruppi)
+            ret.add(new Gruppo(g));
+        return ret;
+
     }
     @Override
     protected Integer primoPuntoDiScelta() {
