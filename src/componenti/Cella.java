@@ -11,37 +11,34 @@ public class Cella extends JPanel {
     private JTextField vincolo;
 
     public Cella() {
-
         setTextLayoutConfig();
-
     }
 
-    public void setTextLayoutConfig()
-    {
+    public void setTextLayoutConfig() {
         text=new JTextField();
         setLayout(new BorderLayout());
         text.setHorizontalAlignment(JTextField.CENTER);
         add(text, BorderLayout.CENTER);
     }
 
-    public void setVincolo(int num, String op)
-    {
+    public void setVincolo(int num, String op) {
         vincolo=new JTextField();
-        vincolo.setText(""+num+op);
+        if(op!=null)
+            vincolo.setText(""+num+op);
+        else
+            vincolo.setText(num+"");
         vincolo.setEnabled(false);
         add(vincolo,BorderLayout.NORTH);
         repaint();
     }
 
-    public void cleanVincolo()
-    {
+    public void cleanVincolo() {
         remove(vincolo);
         revalidate();
         repaint();
     }
 
-    public boolean isCellaSemplice()
-    {
+    public boolean isCellaSemplice() {
         return vincolo==null;
     }
 
@@ -58,8 +55,6 @@ public class Cella extends JPanel {
     {
         return text;
     }
-
-
 
     public void setEnabled(boolean bool)
     {

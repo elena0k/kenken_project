@@ -149,6 +149,7 @@ class Finestra extends JFrame
 
     }
 
+
     public void resizeGriglia(int size)
     {
         remove(pannelloGriglia);

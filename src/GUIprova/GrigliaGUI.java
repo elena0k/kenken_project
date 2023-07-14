@@ -47,8 +47,8 @@ public class GrigliaGUI {
         pannelloGriglia.setSize(450, 450);
         gruppoInserito=false;
         careTaker= new GroupsHistory();
-        careTaker.save(kenken.getMemento());
-        kenken.printGroups();
+        //careTaker.save(kenken.getMemento());
+        //kenken.printGroups();
 
 
         for (int i = 0; i < n; i++) {
@@ -78,7 +78,6 @@ public class GrigliaGUI {
                 grigliaCelle[i][j].setEnabled(false);
                 grigliaCelle[i][j].setMouseAdapter((new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
-                        System.out.println("dio banana");
                         boolean primoElemento = false;
 
                         if (e.getButton() == MouseEvent.BUTTON3)
@@ -164,14 +163,8 @@ public class GrigliaGUI {
 
     }
 
-
     public void resetConfigurazione() {
         cellaImpostata= new boolean[n][n];
-        for(Gruppo g: kenken.getGroups())
-            for(Coordinate c: g.getListaCelle())
-            {
-                cellaImpostata[c.getRiga()][c.getRiga()]=true;
-            }
     }
 
     protected JPanel getPannelloGriglia() {
@@ -243,8 +236,8 @@ public class GrigliaGUI {
     private Coordinate eleggiIndice(Gruppo gruppo)
     {
         List<Coordinate> listaCelle=gruppo.getListaCelle();
-        int minR = Integer.MAX_VALUE;//listaCelle.get(0).getRiga();
-        int minC=Integer.MAX_VALUE;//listaCelle.get(0).getColonna();
+        int minR = Integer.MAX_VALUE;
+        int minC=Integer.MAX_VALUE;
         for(Coordinate c:listaCelle)
         {
             if(c.getRiga()< minR && c.getColonna()<minC) {
@@ -265,36 +258,59 @@ public class GrigliaGUI {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 grigliaCelle[i][j].mySetBorder(border);
-                System.out.println("tolgo vincolo in posizione i:"+", j:"+j);
-                if(!grigliaCelle[i][j].isCellaSemplice())
-                    grigliaCelle[i][j].cleanVincolo();
-                resetConfigurazione();
 
-                grigliaCelle[i][j].updateUI();
+                if(!grigliaCelle[i][j].isCellaSemplice()) {
+                    grigliaCelle[i][j].cleanVincolo();
+                }
+            }
+        }
+        resetConfigurazione();
+        for(Gruppo g: kenken.getGroups()) {
+            for (Coordinate c : g.getListaCelle()) {
+                inserisciBordi(c);
+                drawVincolo(g);
+                cellaImpostata[c.getRiga()][c.getColonna()]=true;
+                grigliaCelle[c.getRiga()][c.getColonna()].updateUI();
             }
         }
 
-        for(Gruppo g: kenken.getGroups())
-            for(Coordinate c: g.getListaCelle())
-            {
-                inserisciBordi(c);
-                drawVincolo(g);
-
-                grigliaCelle[c.getRiga()][c.getColonna()].updateUI();
-            }
-
     }
+
+    private void drawVincolo(Gruppo gruppo) {
+        Coordinate coordVincolo =eleggiIndice(gruppo);
+        Cella cellaSemplice=grigliaCelle[coordVincolo.getRiga()][coordVincolo.getColonna()];
+        cellaSemplice.setVincolo(gruppo.getVincolo(),gruppo.getOperazione());
+    }
+
+
 
     class AscoltatoreEventi implements ActionListener {
 
         public void actionPerformed(ActionEvent a) {
 
+            if(a.getSource()==redo)
+            {
+                careTaker.redo(kenken);
+                if(!careTaker.canRedo())
+                    redo.setEnabled(false);
+                if(careTaker.canUndo())
+                    undo.setEnabled(true);
+                kenken.printGroups();
+                redraw();
+                printCellaImpostata();
+            }
+
             if(a.getSource()==undo){
                 careTaker.undo(kenken);
                 if(!careTaker.canUndo())
                     undo.setEnabled(false);
+                else
+                    redo.setEnabled(true);
                 kenken.printGroups();
                 redraw();
+                printCellaImpostata();
+
+
             }
 
             if(a.getSource()==inserisci) {
@@ -330,20 +346,27 @@ public class GrigliaGUI {
                     inserisciBordi(c);
                 }
 
-                kenken.addGroup(gruppoTmp);
                 careTaker.save(kenken.getMemento());
+                redo.setEnabled(false);
+                kenken.printGroups();
+                kenken.addGroup(gruppoTmp);
+                if(isConfigurata()) {
+                    setState(new PlayState());
+                }
+                printCellaImpostata();
                 undo.setEnabled(true);
                 drawVincolo(gruppoTmp);
-                System.out.println(gruppoTmp);
             }
         }
     }
 
-    private void drawVincolo(Gruppo gruppo) {
-        Coordinate coordVincolo =eleggiIndice(gruppo);
-        Cella cellaSemplice=grigliaCelle[coordVincolo.getRiga()][coordVincolo.getColonna()];
-        cellaSemplice.setVincolo(gruppo.getVincolo(),gruppo.getOperazione());
-        System.out.println("cellaIndice: "+coordVincolo);
+    private void printCellaImpostata() {
+        for(int i=0; i<n;i++) {
+            for (int j = 0; j < n; j++) {
+                System.out.print(cellaImpostata[i][j] + " ");
+            }
+            System.out.println("\n");
+        }
     }
 
 
