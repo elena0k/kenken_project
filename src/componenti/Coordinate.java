@@ -10,6 +10,12 @@ public class Coordinate {
         this.colonna=colonna;
     }
 
+    public Coordinate(Coordinate other)
+    {
+        this.riga=other.riga;
+        this.colonna=other.colonna;
+    }
+
     public int getRiga() {
         return riga;
     }

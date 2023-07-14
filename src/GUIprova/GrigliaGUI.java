@@ -3,6 +3,7 @@ package GUIprova;
 import componenti.Cella;
 import componenti.Coordinate;
 import componenti.Gruppo;
+import risolutore.GroupsHistory;
 import risolutore.KenkenGrid;
 
 import javax.swing.*;
@@ -28,6 +29,7 @@ public class GrigliaGUI {
     private boolean gruppoInserito;
     private State state=new ConfigState();
     private final int BOLD=3;
+    private GroupsHistory careTaker;
 
 
 
@@ -43,6 +45,8 @@ public class GrigliaGUI {
         pannelloGriglia.setLayout(new GridLayout(n, n));
         pannelloGriglia.setSize(450, 450);
         gruppoInserito=false;
+        careTaker= new GroupsHistory();
+        careTaker.save(kenken.getMemento());
 
         MatteBorder border= new MatteBorder(1,1,1,1,Color.black);
         for (int i = 0; i < n; i++) {
@@ -248,6 +252,11 @@ public class GrigliaGUI {
 
         public void actionPerformed(ActionEvent a) {
 
+            if(a.getSource()==undo){
+                careTaker.undo(kenken);
+                kenken.printGroups();
+            }
+
             if(a.getSource()==inserisci) {
                 gruppoInserito=false;
                 int vincolo;
@@ -280,7 +289,9 @@ public class GrigliaGUI {
                     grigliaCelle[i][j].getText().setBackground(Color.WHITE);
                     inserisciBordi(c);
                 }
+
                 kenken.addGroup(gruppoTmp);
+                careTaker.save(kenken.getMemento());
                 Coordinate coordVincolo =eleggiIndice(gruppoTmp);
                 Cella cellaSemplice=grigliaCelle[coordVincolo.getRiga()][coordVincolo.getColonna()];
                 cellaSemplice.setVincolo(vincolo,operazione);

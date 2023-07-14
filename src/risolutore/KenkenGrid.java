@@ -2,11 +2,14 @@ package risolutore;
 
 import componenti.Coordinate;
 import componenti.Gruppo;
+import memento.Memento;
+import memento.Originator;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
-public class KenkenGrid extends Problema<Integer,Integer>{
+public class KenkenGrid extends Problema<Integer,Integer> implements Originator {
 
     private int[][] griglia;
     private int dim;
@@ -29,6 +32,12 @@ public class KenkenGrid extends Problema<Integer,Integer>{
     public void addGroup(Gruppo gruppo)
     {
         this.listaGruppi.add(gruppo);
+    }
+
+    public void printGroups()
+    {
+        for(Gruppo g:listaGruppi)
+            System.out.println("GRUPPI"+g+"\n");
     }
     @Override
     protected Integer primoPuntoDiScelta() {
@@ -176,6 +185,44 @@ public class KenkenGrid extends Problema<Integer,Integer>{
         return numZeri==1;
     }
 
+    @Override
+    public Memento getMemento() {
+        return new GruppiMemento();
+    }
+
+    @Override
+    public void setMemento(Memento memento) {
+        if(!(memento instanceof GruppiMemento))
+            throw new IllegalArgumentException();
+        GruppiMemento gruppiMemento= (GruppiMemento) memento;
+
+        if(this!=gruppiMemento.getOriginator())
+            throw new IllegalArgumentException();
+
+        this.listaGruppi=gruppiMemento.listaGruppi;
+
+    }
+
+    private class GruppiMemento implements Memento{
+
+        LinkedList<Gruppo> listaGruppi;
+
+        KenkenGrid getOriginator() {
+            return KenkenGrid.this;
+        }
+
+        GruppiMemento() {
+            this.listaGruppi=new LinkedList<>();
+            for(Gruppo g: KenkenGrid.this.listaGruppi) {
+                listaGruppi.add(new Gruppo(g));
+            }
+        }
+
+
+
+    }
+
+
 
     public static void main(String[] args)
     {
@@ -210,4 +257,6 @@ public class KenkenGrid extends Problema<Integer,Integer>{
         KenkenGrid kenken=new KenkenGrid(3);
         kenken.risolvi();
     }
+
+
 }

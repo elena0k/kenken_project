@@ -50,6 +50,8 @@ class Finestra extends JFrame
     public Finestra(int n)
     {
         setTitle("KenkenGUI ");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         AscoltatoreEventi actListener = new AscoltatoreEventi();
 
         this.n=n;
