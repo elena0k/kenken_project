@@ -22,7 +22,7 @@ class Finestra extends JFrame
     private JPopupMenu popup;
     boolean hoModificheNonSalvate = false;
     private int indiceSoluzioneAttuale;
-    private State state=new Configurazione();
+
     private final int BOLD=3;
     private final int DEFAULT=4;
 
@@ -63,7 +63,6 @@ class Finestra extends JFrame
         add(pannelloPulsanti, BorderLayout.EAST);
         setSize(480, 400);
         setLocation(0, 0);
-        state.terminaConfigurazione(this);
     }
 
     private void costruisciPannelloPulsanti(AscoltatoreEventi actListener) {
@@ -158,10 +157,7 @@ class Finestra extends JFrame
         pannelloGriglia.updateUI();
     }
 
-    public void setState(State state)
-    {
-        this.state=state;
-    }
+
 
 }
 

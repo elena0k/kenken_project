@@ -2,9 +2,10 @@ package GUIprova;
 
 public interface State {
 
-    void terminaConfigurazione(Finestra kenken);
-    void resetGioco(Finestra kenken);
-    void terminaGioco(Finestra kenken);
+    void selezionaGruppi(GrigliaGUI griglia);  //configurazione
+    void scriviNumero(GrigliaGUI griglia);
+    void resetGioco(GrigliaGUI griglia);
+    void terminaGioco(GrigliaGUI griglia);
 
 
 }

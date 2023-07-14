@@ -1,7 +1,27 @@
 package GUIprova;
 
 public class Play implements State{
+    @Override
+    public void selezionaGruppi(GrigliaGUI griglia) {
 
+    }
+
+    @Override
+    public void scriviNumero(GrigliaGUI griglia) {
+
+    }
+
+    @Override
+    public void resetGioco(GrigliaGUI griglia) {
+
+    }
+
+    @Override
+    public void terminaGioco(GrigliaGUI griglia) {
+
+    }
+
+    /*
     @Override
     public void terminaConfigurazione(Finestra kenken) {
         System.out.println("Necessario reset della griglia.");
@@ -17,4 +37,6 @@ public class Play implements State{
     public void terminaGioco(Finestra kenken) {
         kenken.setState(new MostraSoluzione());
     }
+
+     */
 }
