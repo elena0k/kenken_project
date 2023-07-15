@@ -1,4 +1,6 @@
-package GUIprova;
+package state;
+
+import gestore_GUI.GrigliaGUI;
 
 public interface State {
 

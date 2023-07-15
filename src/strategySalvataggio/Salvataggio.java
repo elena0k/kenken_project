@@ -1,7 +1,6 @@
 package strategySalvataggio;
 
-import GUIprova.GrigliaGUI;
-import GUIprova.KenkenGUI;
+import gestore_GUI.GrigliaGUI;
 
 public interface Salvataggio {
     void salva(GrigliaGUI grigliaGUI);

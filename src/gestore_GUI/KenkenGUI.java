@@ -1,8 +1,9 @@
-package GUIprova;
+package gestore_GUI;
 
-import observer.PlsObserverAbilita;
-import observer.PlsObserverDisabilita;
-import observer.PlsSubject;
+import observer.CheckObserver;
+
+import observer.NextPrevObserver;
+import observer.StartObserver;
 import strategySalvataggio.Salvataggio;
 import strategySalvataggio.SalvataggioConfigurazione;
 
@@ -10,6 +11,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 class Finestra extends JFrame
 {
@@ -26,7 +29,6 @@ class Finestra extends JFrame
     private JButton plsNext;
     private JButton plsStart;
     private JPopupMenu popup;
-    private PlsSubject plsSubject;
     private boolean hoModificheNonSalvate = false;
     private Salvataggio salvataggio;
     private int indiceSoluzioneAttuale;
@@ -77,8 +79,10 @@ class Finestra extends JFrame
 
             if(a.getSource()==jmiApri)
             {
+                //TODO rivedere
                 remove(pannelloGriglia);
                 grigliaGUI=salvataggio.apri();
+                grigliaGUI.getKenken().risolvi();  //rivedi
                 pannelloGriglia= grigliaGUI.getPannelloGriglia();
                 add(pannelloGriglia, BorderLayout.CENTER);
                 pannelloGriglia.updateUI();
@@ -103,6 +107,8 @@ class Finestra extends JFrame
 
         costruisciPannelloPulsanti(actListener);
         costruisciMenu(actListener);
+
+        impostaObserverEndConfig();
 
         add(pannelloGriglia, BorderLayout.CENTER);
         add(pannelloPulsanti, BorderLayout.EAST);
@@ -129,8 +135,43 @@ class Finestra extends JFrame
 
         plsCheck = new JButton("CHECK");
         plsCheck.setFont(new Font("Franklin Gothic Medium Cond", Font.BOLD, 14));
-        plsCheck.addActionListener(actListener);
-        plsCheck.setEnabled(false);
+        plsCheck.addMouseListener(new MouseAdapter() {
+            private boolean isButtonPressed = false;
+            private boolean isActionRunning = false;
+            private int delay = 100; // Millisecondi di ritardo tra le azioni ripetute
+            private Timer timer;
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                isButtonPressed = true;
+                startAction();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                isButtonPressed = false;
+                stopAction();
+            }
+
+            private void startAction() {
+                if (!isActionRunning) {
+                    isActionRunning = true;
+                    timer = new Timer(delay, event -> {
+                        grigliaGUI.evidenziaSoluzioniScorrette();
+                    });
+                    timer.start();
+                }
+            }
+
+            private void stopAction() {
+                if (isActionRunning) {
+                    isActionRunning = false;
+                    grigliaGUI.redraw();
+                    timer.stop();
+                }
+            }
+        });
+        plsCheck.setEnabled(true);
 
         pannelloPulsanti.setLayout(new GridLayout(4, 1, 10, 10));
         pannelloPulsanti.setSize(100, 400);
@@ -138,7 +179,7 @@ class Finestra extends JFrame
         pannelloPulsanti.add(plsPrev);
         pannelloPulsanti.add(plsNext);
         pannelloPulsanti.add(plsCheck);
-        impostaObserveriGioco();
+
     }
 
     private void costruisciMenu(ActionListener ascoltatore) {
@@ -204,15 +245,13 @@ class Finestra extends JFrame
         pannelloGriglia.updateUI();
     }
 
-    public void impostaObserveriGioco()
+    public void impostaObserverEndConfig()
     {
-        plsSubject= grigliaGUI.getSubject();
-        plsSubject.attach(new PlsObserverAbilita(plsStart));
-        plsSubject.attach(new PlsObserverDisabilita(plsCheck));
-        plsSubject.attach(new PlsObserverDisabilita(plsNext));
-        plsSubject.attach(new PlsObserverDisabilita(plsPrev));
+        grigliaGUI.attach(new StartObserver(plsStart,grigliaGUI));
+        grigliaGUI.attach(new CheckObserver(plsCheck,grigliaGUI));
+        grigliaGUI.attach(new NextPrevObserver(plsNext,grigliaGUI));
+        grigliaGUI.attach(new NextPrevObserver(plsPrev,grigliaGUI));
     }
-
 
 
 

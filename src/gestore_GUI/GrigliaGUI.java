@@ -1,11 +1,13 @@
-package GUIprova;
+package gestore_GUI;
 
 import componenti.Cella;
 import componenti.Coordinate;
 import componenti.Gruppo;
-import observer.PlsSubject;
+import observer.Observer;
+import observer.Subject;
 import risolutore.GroupsHistory;
 import risolutore.KenkenGrid;
+import state.State;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -17,42 +19,37 @@ import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GrigliaGUI {
+public class GrigliaGUI extends Subject {
 
     private JPanel pannelloGriglia;
     private int n;
     private KenkenGrid kenken;
     private Cella[][] grigliaCelle;
     private boolean[][] cellaImpostata;
-    private JMenuItem inserisci, redo, undo, cancel;
+    private JMenuItem inserisci, redo, undo, cancel, showSol;
     private JPopupMenu popup;
     private Gruppo gruppoTmp;
     private boolean gruppoInserito;
     private State state=new ConfigState();
     private final int BOLD=3;
     private GroupsHistory careTaker;
-    private PlsSubject subject;
+    private AscoltatoreEventi actListener;
     private MatteBorder border= new MatteBorder(1,1,1,1,Color.black);
 
 
 
     public GrigliaGUI(int n) {
 
-        AscoltatoreEventi actListener = new AscoltatoreEventi();
+        actListener = new AscoltatoreEventi();
         this.n=n;
         kenken= new KenkenGrid(n);
         grigliaCelle =new Cella[n][n];
-        state=new ConfigState();
         resetConfigurazione();
         pannelloGriglia= new JPanel();
         pannelloGriglia.setLayout(new GridLayout(n, n));
         pannelloGriglia.setSize(450, 450);
         gruppoInserito=false;
         careTaker= new GroupsHistory();
-        subject= new PlsSubject();
-        //careTaker.save(kenken.getMemento());
-        //kenken.printGroups();
-
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -63,8 +60,9 @@ public class GrigliaGUI {
                 pannelloGriglia.add((Component) grigliaCelle[i][j]);
             }
         }
-        state.intercettaClick(this);
-        costruisciMenu(actListener);
+        setState(new ConfigState());
+        //state.intercettaClick(this);
+
     }
 
 //TODO proteggere il metodo o passare copia
@@ -76,12 +74,17 @@ public class GrigliaGUI {
     public void setState(State state)
     {
         this.state=state;
+        notifyObservers();
         state.intercettaClick(this);
     }
 
-    protected PlsSubject getSubject(){return subject;}
+    public State getState()
+    {
+        return this.state;
+    }
 
-    protected void impostaGruppi()
+
+    void impostaGruppi()
     {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -110,7 +113,7 @@ public class GrigliaGUI {
                                         if (!cellaImpostata[i][j]) {
                                             if (adiacenti(new Coordinate(i, j), gruppoTmp.getListaCelle()) || primoElemento) {
                                                 gruppoInserito = true;
-                                                grigliaCelle[i][j].getTextField().setBackground(new Color(210, 210, 210));
+                                                grigliaCelle[i][j].mySetBackground(new Color(210, 210, 210));
                                                 gruppoTmp.addCella(i, j);
                                                 cellaImpostata[i][j] = true;
                                                 System.out.println("impostata cella:<" + i + ":" + j + ">");
@@ -182,35 +185,38 @@ public class GrigliaGUI {
         return this.pannelloGriglia;
     }
 
-    private void costruisciMenu(ActionListener ascoltatore) {
+    protected void costruisciMenuConfig() {
         popup = new JPopupMenu();
-        inserisci = new JMenuItem("inserisci");
-        inserisci.addActionListener(ascoltatore);
+        inserisci = new JMenuItem("insert");
+        inserisci.addActionListener(actListener);
         popup.add(inserisci);
-        /*
-        cancel = new JMenuItem("cancel");
-        cancel.addActionListener(ascoltatore);
-        popup.add(cancel);
 
-         */
         undo = new JMenuItem("undo");
-        undo.addActionListener(ascoltatore);
+        undo.addActionListener(actListener);
         undo.setEnabled(false);
         popup.add(undo);
+
         redo = new JMenuItem("redo");
-        redo.addActionListener(ascoltatore);
+        redo.addActionListener(actListener);
         redo.setEnabled(false);
         popup.add(redo);
 
         pannelloGriglia.setComponentPopupMenu(popup);
     }
 
-    private void impostaFont(int i, int j) {
-        if(n==6 || n==5)
-            grigliaCelle[i][j].getTextField().setFont(new Font("Courier New", Font.BOLD, 20));
-        else if(n==3 || n==4)
-            grigliaCelle[i][j].getTextField().setFont(new Font("Courier New", Font.BOLD, 35));
+    protected void costruisciMenuPlay() {
+        popup = new JPopupMenu();
 
+        cancel = new JMenuItem("clear");
+        cancel.setEnabled(false);
+        cancel.addActionListener(actListener);
+        popup.add(cancel);
+
+        showSol = new JMenuItem("reveal");
+        showSol.addActionListener(actListener);
+        popup.add(showSol);
+
+        pannelloGriglia.setComponentPopupMenu(popup);
     }
 
     protected boolean isConfigurata() {
@@ -269,7 +275,7 @@ public class GrigliaGUI {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 grigliaCelle[i][j].mySetBorder(border);
-                grigliaCelle[i][j].getTextField().setBackground(Color.WHITE);
+                grigliaCelle[i][j].mySetBackground(Color.WHITE);
                 if(!grigliaCelle[i][j].isCellaSemplice()) {
                     grigliaCelle[i][j].cleanVincolo();
                 }
@@ -287,16 +293,20 @@ public class GrigliaGUI {
 
     }
 
-    private void evidenziaSoluzioniScorrette()
+    public void evidenziaSoluzioniScorrette()
     {
         if(kenken.getNrSol()==1) {
             int[][] soluzione=kenken.getListaSoluzioni().get(0);
             for (Gruppo g : kenken.getGroups()) {
                 for (Coordinate c : g.getListaCelle()) {
-                    if(grigliaCelle[c.getRiga()][c.getColonna()].getText()!=null) {
+                    String elem=grigliaCelle[c.getRiga()][c.getColonna()].getText();
+                    if(elem !="") {
+                        System.out.println("dio banana:  "+elem);
                         int valoreInserito = Integer.parseInt(grigliaCelle[c.getRiga()][c.getColonna()].getText());
-                        if (valoreInserito != soluzione[c.getRiga()][c.getColonna()])
-                            grigliaCelle[c.getRiga()][c.getColonna()].getTextField().setBackground(Color.RED);
+                        if (valoreInserito != soluzione[c.getRiga()][c.getColonna()]) {
+                            grigliaCelle[c.getRiga()][c.getColonna()].mySetBackground(Color.RED);
+
+                        }
                     }
 
                 }
@@ -318,14 +328,13 @@ public class GrigliaGUI {
     }
 
     public void settaPulsantiPlay() {
-        undo.setEnabled(false);
-        redo.setEnabled(false);
         for(int i=0; i<n;i++) {
             for(int j=0; j<n; j++) {
                 grigliaCelle[i][j].setEnabled(true);
             }
         }
-
+        pannelloGriglia.remove(popup);
+        costruisciMenuPlay();
     }
 
 
@@ -399,7 +408,7 @@ public class GrigliaGUI {
                     for (Coordinate c : gruppoTmp.getListaCelle()) {
                         int j = c.getColonna();
                         int i = c.getRiga();
-                        grigliaCelle[i][j].getTextField().setBackground(Color.WHITE);
+                        grigliaCelle[i][j].mySetBackground(Color.WHITE);
                         inserisciBordi(c,gruppoTmp);
                     }
 
@@ -411,7 +420,6 @@ public class GrigliaGUI {
 
                 if(isConfigurata()) {
                     setState(new PlayState());
-                    subject.notifyObservers();
                     kenken.risolvi();
                     System.out.println(kenken.getNrSol());
                 }

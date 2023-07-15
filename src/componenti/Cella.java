@@ -13,7 +13,7 @@ import java.awt.event.MouseAdapter;
 
 public class Cella extends JPanel {
 
-    private JTextField text;
+    private JTextField text= new JTextField();
     private JTextField vincolo;
     private PlainDocument doc;
     private int n;
@@ -79,7 +79,6 @@ public class Cella extends JPanel {
     }
 
     public void setTextLayoutConfig() {
-        text=new JTextField();
         setLayout(new BorderLayout());
         text.setHorizontalAlignment(JTextField.CENTER);
         add(text, BorderLayout.CENTER);
@@ -118,6 +117,13 @@ public class Cella extends JPanel {
     public JTextField getTextField()
     {
         return text;
+    }
+
+    public void mySetBackground(Color color)
+    {
+        text.setBackground(color);
+        if(vincolo!=null)
+            vincolo.setBackground(color);
     }
 
     public String getText()

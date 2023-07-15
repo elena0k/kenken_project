@@ -1,7 +1,7 @@
 package strategySalvataggio;
 
-import GUIprova.GrigliaGUI;
-import GUIprova.PlayState;
+import gestore_GUI.GrigliaGUI;
+import gestore_GUI.PlayState;
 import componenti.Gruppo;
 
 import javax.swing.*;
@@ -77,6 +77,7 @@ public class SalvataggioConfigurazione implements Salvataggio{
 
     @Override
     public GrigliaGUI apri() {
+        //TODO risolvere kenken anche quando apro da file
         GrigliaGUI grigliaGUI=null;
         JFileChooser jfc = new JFileChooser();
         if (jfc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)

@@ -3,9 +3,9 @@ package observer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlsSubject{
+public abstract class Subject{
 
-    private List<Observer> observers = new ArrayList<>();
+    protected List<Observer> observers = new ArrayList<>();
 
     public void attach(Observer observer) {
         observers.add(observer);

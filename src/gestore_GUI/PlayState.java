@@ -1,6 +1,9 @@
-package GUIprova;
+package gestore_GUI;
 
-public class PlayState implements State{
+import gestore_GUI.GrigliaGUI;
+import state.State;
+
+public class PlayState implements State {
 
 
     @Override
