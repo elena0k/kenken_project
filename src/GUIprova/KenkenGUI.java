@@ -1,5 +1,11 @@
 package GUIprova;
 
+import observer.PlsObserverAbilita;
+import observer.PlsObserverDisabilita;
+import observer.PlsSubject;
+import strategySalvataggio.Salvataggio;
+import strategySalvataggio.SalvataggioConfigurazione;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -20,7 +26,9 @@ class Finestra extends JFrame
     private JButton plsNext;
     private JButton plsStart;
     private JPopupMenu popup;
-    boolean hoModificheNonSalvate = false;
+    private PlsSubject plsSubject;
+    private boolean hoModificheNonSalvate = false;
+    private Salvataggio salvataggio;
     private int indiceSoluzioneAttuale;
 
     private final int BOLD=3;
@@ -44,8 +52,41 @@ class Finestra extends JFrame
             if(a.getSource()==celle6) {
                 resizeGriglia(6);
             }
+            if(a.getSource()==plsStart)
+            {
+                int choice=0;
+                if(!grigliaGUI.haSoluzione())
+                    JOptionPane.showMessageDialog(null,
+                            "La configurazione selezionata non presenta soluzioni!");
+                else
+                    choice = JOptionPane.showConfirmDialog(null,
+                            "Vuoi salvare la configurazione?");
+                if (choice == JOptionPane.YES_OPTION) {
+                    salvataggio=new SalvataggioConfigurazione();
+                    salvataggio.salvaConNome(grigliaGUI);
+                }
+            }
+            if(a.getSource()==jmiHelp)
+                JOptionPane.showMessageDialog(null,
+                        "-Puoi personalizzare la difficoltà dalla barra SIZE. \n" +
+                                "-Usa il pulsante CHECK per verificare che tuttu i numeri \n" +
+                                " inseriti nei blocchi rispettino i vincoli. \n" +
+                                "-I numeri all'interno di uno stesso blocco possono ripetersi \n" +
+                                " a patto che non si ripetano sulla riga o sulla colonna! \n" +
+                                "-Usa i pulsanti NEXT e PREVIOUS per navigare tra le soluzioni." );
+
+            if(a.getSource()==jmiApri)
+            {
+                remove(pannelloGriglia);
+                grigliaGUI=salvataggio.apri();
+                pannelloGriglia= grigliaGUI.getPannelloGriglia();
+                add(pannelloGriglia, BorderLayout.CENTER);
+                pannelloGriglia.updateUI();
+            }
+
         }
     }
+
 
     public Finestra(int n)
     {
@@ -54,6 +95,8 @@ class Finestra extends JFrame
 
         AscoltatoreEventi actListener = new AscoltatoreEventi();
 
+        //TODO chiedo all'utente il tipo di salvataggio
+        salvataggio=new SalvataggioConfigurazione();
         this.n=n;
         grigliaGUI= new GrigliaGUI(n);
         pannelloGriglia= grigliaGUI.getPannelloGriglia();
@@ -95,6 +138,7 @@ class Finestra extends JFrame
         pannelloPulsanti.add(plsPrev);
         pannelloPulsanti.add(plsNext);
         pannelloPulsanti.add(plsCheck);
+        impostaObserveriGioco();
     }
 
     private void costruisciMenu(ActionListener ascoltatore) {
@@ -159,6 +203,17 @@ class Finestra extends JFrame
         add(pannelloGriglia, BorderLayout.CENTER);
         pannelloGriglia.updateUI();
     }
+
+    public void impostaObserveriGioco()
+    {
+        plsSubject= grigliaGUI.getSubject();
+        plsSubject.attach(new PlsObserverAbilita(plsStart));
+        plsSubject.attach(new PlsObserverDisabilita(plsCheck));
+        plsSubject.attach(new PlsObserverDisabilita(plsNext));
+        plsSubject.attach(new PlsObserverDisabilita(plsPrev));
+    }
+
+
 
 
 

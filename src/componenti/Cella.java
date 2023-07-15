@@ -2,6 +2,12 @@ package componenti;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 
@@ -9,9 +15,67 @@ public class Cella extends JPanel {
 
     private JTextField text;
     private JTextField vincolo;
+    private PlainDocument doc;
+    private int n;
 
     public Cella() {
+        doc=new PlainDocument();
+        filtraText();
         setTextLayoutConfig();
+        text.setDocument(doc);
+    }
+
+    public void setN(int n)
+    {
+        this.n=n;
+    }
+
+    public void filtraText() {
+        doc.setDocumentFilter(new DocumentFilter(){
+            public void insertString(FilterBypass fb, int offset, String text, AttributeSet attrs) throws BadLocationException {
+                if (!text.matches("//d")) {
+                    return; // Ignora l'inserimento
+                }
+                int num=Integer.parseInt(text);
+                if(num>0 && num<=n)
+                    super.insertString(fb, offset, text, attrs);
+            }
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+                if (!text.matches("\\d")) {
+                    return; // Ignora la sostituzione
+                }
+                int num=Integer.parseInt(text);
+                if(num>0 && num<=n)
+                    super.replace(fb, offset, length, text, attrs);
+            }
+        });
+
+        doc.addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                validateInput();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                validateInput();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                validateInput();
+            }
+
+            private void validateInput() {
+                String input = text.getText();
+                if (input.length() > 1 || (input.length() == 1 && !Character.isDigit(input.charAt(0)))) {
+                    SwingUtilities.invokeLater(() -> {
+                        text.setText(input.substring(0, Math.min(input.length(), 1)));
+                    });
+                }
+            }
+        });
     }
 
     public void setTextLayoutConfig() {
@@ -51,10 +115,16 @@ public class Cella extends JPanel {
     }
 
 
-    public JTextField getText()
+    public JTextField getTextField()
     {
         return text;
     }
+
+    public String getText()
+    {
+        return text.getText();
+    }
+
 
     public void setEnabled(boolean bool)
     {

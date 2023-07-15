@@ -28,6 +28,11 @@ public class KenkenGrid extends Problema<Integer,Integer> implements Originator 
         listaGruppi= new LinkedList<>();
 
     }
+    public int getNrSol(){return nrSol;}
+    public ArrayList<int[][]> getListaSoluzioni() //TODO fare copia profonda
+    {
+        return new ArrayList<>(List.copyOf(listaSoluzioni));
+    }
 
     public void addGroup(Gruppo gruppo)
     {
@@ -122,6 +127,7 @@ public class KenkenGrid extends Problema<Integer,Integer> implements Originator 
             System.out.println(java.util.Arrays.toString(griglia[i]));
         System.out.println();
         listaSoluzioni.add(getGriglia());
+        this.nrSol= listaSoluzioni.size();
     }
 
     private boolean verificaColonna(Integer j,Integer scelta)

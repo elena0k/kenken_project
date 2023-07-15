@@ -2,10 +2,11 @@ package componenti;
 
 import componenti.Coordinate;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Gruppo {
+public class Gruppo implements Serializable {
 
     //TODO faccio un builder nel caso si oglia implementare il gruppo in modo diverso
     private LinkedList<Coordinate> listaCelle;
