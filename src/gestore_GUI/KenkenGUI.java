@@ -116,8 +116,10 @@ class Finestra extends JFrame {
 
             if (a.getSource() == jmiApri) {
                 //TODO rivedere
-                if (pannelloGriglia != null)
+                if (pannelloGriglia != null) {
+                    grigliaGUI.removeCelle();
                     remove(pannelloGriglia);
+                }
                 grigliaGUI = salvataggio.apri();
                 impostaObserver();
                 grigliaGUI.setState(PlayState.getInstance());

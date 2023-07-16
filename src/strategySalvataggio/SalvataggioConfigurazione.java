@@ -48,8 +48,14 @@ public class SalvataggioConfigurazione implements Salvataggio {
                 if (jfc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION)
                     fileDiSalvataggio = jfc.getSelectedFile();
                 if (fileDiSalvataggio != null) {
+                    int[][] matriceTmp= new int[grigliaGUI.getN()][grigliaGUI.getN()];
                     ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileDiSalvataggio));
+                    oos.writeObject(grigliaGUI.getN());
                     oos.writeObject(grigliaGUI.getKenken().getGroups());
+                    for (int i = 0; i < grigliaGUI.getN(); i++)
+                        for (int j = 0; j < grigliaGUI.getN(); j++)
+                            matriceTmp[i][j] = grigliaGUI.getMatriceScelte()[i][j];
+                    oos.writeObject(matriceTmp);
                     oos.close();
                 } else
                     JOptionPane.showMessageDialog(null, "Salvataggio non avvenuto");
@@ -78,9 +84,10 @@ public class SalvataggioConfigurazione implements Salvataggio {
                     e1.printStackTrace();
                 }
                 try {
+                    int n= (int) ois.readObject();
                     List<Gruppo> listaGruppi = (List<Gruppo>) ois.readObject();
                     ois.close();
-                    grigliaGUI = new GrigliaGUI(4); //TODO dare dimensione corretta
+                    grigliaGUI = new GrigliaGUI(n); //TODO dare dimensione corretta
                     for (int i = 0; i < listaGruppi.size(); i++)
                         grigliaGUI.getKenken().addGroup(listaGruppi.get(i));
                     grigliaGUI.redraw();

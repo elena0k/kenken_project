@@ -32,6 +32,8 @@ public class GrigliaGUI extends Subject {
     private boolean[][] cellaImpostata;
     private JMenuItem inserisci, redo, undo, clear, showSol, resetConfig, resetGame;
     private JPopupMenu popup;
+
+    //TODO rendere locale
     private Gruppo gruppoTmp;
     private boolean gruppoInserito, controlloAttivo;
     private ArrayList<int[][]> listaSoluzioni;
@@ -76,6 +78,9 @@ public class GrigliaGUI extends Subject {
 
     //TODO proteggere il metodo o passare copia
     public KenkenGrid getKenken() {return kenken;}
+
+    //TODO proteggere metodo
+    public int[][] getMatriceScelte(){return matriceScelte;}
 
     public int getNumSol(){return kenken.getNrSol();}
 
@@ -205,6 +210,12 @@ public class GrigliaGUI extends Subject {
             if (j != colonna && matriceScelte[i][j] == val)
                 return false;
         return true;
+    }
+
+    void removeCelle() {
+        for(int i=0; i<n; i++)
+            for(int j=0; j<n; j++)
+                pannelloGriglia.remove(grigliaCelle[i][j]);
     }
 
     void impostaGruppi() {
