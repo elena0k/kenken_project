@@ -44,15 +44,19 @@ class Finestra extends JFrame
 
             if(a.getSource()==celle3) {
                 resizeGriglia(3);
+                grigliaGUI.setState(ConfigState.getInstance());
             }
             if(a.getSource()==celle4) {
                 resizeGriglia(4);
+                grigliaGUI.setState(ConfigState.getInstance());
             }
             if(a.getSource()==celle5) {
                 resizeGriglia(5);
+                grigliaGUI.setState(ConfigState.getInstance());
             }
             if(a.getSource()==celle6) {
                 resizeGriglia(6);
+                grigliaGUI.setState(ConfigState.getInstance());
             }
             if(a.getSource()==plsStart)
             {
@@ -80,8 +84,10 @@ class Finestra extends JFrame
             if(a.getSource()==jmiApri)
             {
                 //TODO rivedere
-                remove(pannelloGriglia);
+                if(pannelloGriglia != null)
+                    remove(pannelloGriglia);
                 grigliaGUI=salvataggio.apri();
+                grigliaGUI.setState(PlayState.getInstance());
                 grigliaGUI.getKenken().risolvi();  //rivedi
                 pannelloGriglia= grigliaGUI.getPannelloGriglia();
                 add(pannelloGriglia, BorderLayout.CENTER);
@@ -104,11 +110,12 @@ class Finestra extends JFrame
         this.n=n;
         grigliaGUI= new GrigliaGUI(n);
         pannelloGriglia= grigliaGUI.getPannelloGriglia();
-
+        //TODO fixare visibilità package e protected
         costruisciPannelloPulsanti(actListener);
         costruisciMenu(actListener);
 
-        impostaObserverEndConfig();
+        impostaObserver();
+        grigliaGUI.setState(ConfigState.getInstance());
 
         add(pannelloGriglia, BorderLayout.CENTER);
         add(pannelloPulsanti, BorderLayout.EAST);
@@ -239,13 +246,14 @@ class Finestra extends JFrame
     {
         remove(pannelloGriglia);
         grigliaGUI = new GrigliaGUI(size);
+        impostaObserver();
         pannelloGriglia=grigliaGUI.getPannelloGriglia();
         this.n=size;
         add(pannelloGriglia, BorderLayout.CENTER);
         pannelloGriglia.updateUI();
     }
 
-    public void impostaObserverEndConfig()
+    public void impostaObserver()
     {
         grigliaGUI.attach(new StartObserver(plsStart,grigliaGUI));
         grigliaGUI.attach(new CheckObserver(plsCheck,grigliaGUI));

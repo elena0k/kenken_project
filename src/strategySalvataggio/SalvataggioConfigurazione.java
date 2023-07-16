@@ -106,7 +106,7 @@ public class SalvataggioConfigurazione implements Salvataggio{
                     for (int i = 0; i < listaGruppi.size(); i++)
                         grigliaGUI.getKenken().addGroup(listaGruppi.get(i));
                     grigliaGUI.redraw();
-                    grigliaGUI.setState(new PlayState());
+                    grigliaGUI.setState(PlayState.getInstance());
                 }
                 catch (Exception e1)
                 {

@@ -30,7 +30,7 @@ public class GrigliaGUI extends Subject {
     private JPopupMenu popup;
     private Gruppo gruppoTmp;
     private boolean gruppoInserito;
-    private State state=new ConfigState();
+    private State state;
     private final int BOLD=3;
     private GroupsHistory careTaker;
     private AscoltatoreEventi actListener;
@@ -60,7 +60,7 @@ public class GrigliaGUI extends Subject {
                 pannelloGriglia.add((Component) grigliaCelle[i][j]);
             }
         }
-        setState(new ConfigState());
+        //setState(ConfigState.getInstance());
         //state.intercettaClick(this);
 
     }
@@ -300,13 +300,14 @@ public class GrigliaGUI extends Subject {
             for (Gruppo g : kenken.getGroups()) {
                 for (Coordinate c : g.getListaCelle()) {
                     String elem=grigliaCelle[c.getRiga()][c.getColonna()].getText();
-                    if(elem !="") {
+                    if(elem != null && !elem.equals("")) {
                         System.out.println("dio banana:  "+elem);
                         int valoreInserito = Integer.parseInt(grigliaCelle[c.getRiga()][c.getColonna()].getText());
-                        if (valoreInserito != soluzione[c.getRiga()][c.getColonna()]) {
+                        if (valoreInserito != soluzione[c.getRiga()][c.getColonna()])
                             grigliaCelle[c.getRiga()][c.getColonna()].mySetBackground(Color.RED);
+                        else
+                            grigliaCelle[c.getRiga()][c.getColonna()].mySetBackground(Color.GREEN);
 
-                        }
                     }
 
                 }
@@ -333,7 +334,8 @@ public class GrigliaGUI extends Subject {
                 grigliaCelle[i][j].setEnabled(true);
             }
         }
-        pannelloGriglia.remove(popup);
+        if(popup != null)
+            pannelloGriglia.remove(popup);
         costruisciMenuPlay();
     }
 
@@ -419,7 +421,7 @@ public class GrigliaGUI extends Subject {
                 }
 
                 if(isConfigurata()) {
-                    setState(new PlayState());
+                    setState(PlayState.getInstance());
                     kenken.risolvi();
                     System.out.println(kenken.getNrSol());
                 }
