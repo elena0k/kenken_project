@@ -127,6 +127,7 @@ public class Cella extends JPanel {
     public String getText() {
         return text.getText();
     }
+    public void cleanText(){text.setText("");}
 
 
     public void setEnabled(boolean bool) {

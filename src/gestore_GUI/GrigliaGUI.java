@@ -25,7 +25,7 @@ public class GrigliaGUI extends Subject {
     private KenkenGrid kenken;
     private Cella[][] grigliaCelle;
     private boolean[][] cellaImpostata;
-    private JMenuItem inserisci, redo, undo, cancel, showSol;
+    private JMenuItem inserisci, redo, undo, clear, showSol, resetConfig, resetGame;
     private JPopupMenu popup;
     private Gruppo gruppoTmp;
     private boolean gruppoInserito;
@@ -55,7 +55,7 @@ public class GrigliaGUI extends Subject {
                 grigliaCelle[i][j].setN(n);
                 grigliaCelle[i][j].setFont(n);
                 grigliaCelle[i][j].mySetBorder(border);
-                pannelloGriglia.add((Component) grigliaCelle[i][j]);
+                pannelloGriglia.add(grigliaCelle[i][j]);
             }
         }
         //setState(ConfigState.getInstance());
@@ -80,14 +80,15 @@ public class GrigliaGUI extends Subject {
 
 
     void impostaGruppi() {
+
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
 
                 grigliaCelle[i][j].setEnabled(false);
                 grigliaCelle[i][j].setMouseAdapter((new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
-                        boolean primoElemento = false;
 
+                        boolean primoElemento = false;
                         if (e.getButton() == MouseEvent.BUTTON3)
                             popup.show(e.getComponent(), e.getX(), e.getY());
 
@@ -174,11 +175,11 @@ public class GrigliaGUI extends Subject {
         cellaImpostata = new boolean[n][n];
     }
 
-    protected JPanel getPannelloGriglia() {
+    JPanel getPannelloGriglia() {
         return this.pannelloGriglia;
     }
 
-    protected void costruisciMenuConfig() {
+    void costruisciMenuConfig() {
         popup = new JPopupMenu();
         inserisci = new JMenuItem("insert");
         inserisci.addActionListener(actListener);
@@ -197,22 +198,39 @@ public class GrigliaGUI extends Subject {
         pannelloGriglia.setComponentPopupMenu(popup);
     }
 
-    protected void costruisciMenuPlay() {
+    void costruisciMenuPlay() {
         popup = new JPopupMenu();
 
-        cancel = new JMenuItem("clear");
-        cancel.setEnabled(false);
-        cancel.addActionListener(actListener);
-        popup.add(cancel);
+        clear = new JMenuItem("clear");
+        //clear.setEnabled(false);
+        clear.addActionListener(actListener);
+        popup.add(clear);
 
         showSol = new JMenuItem("reveal");
         showSol.addActionListener(actListener);
         popup.add(showSol);
 
+        resetConfig = new JMenuItem("reset config");
+        resetConfig.addActionListener(actListener);
+        popup.add(resetConfig);
+
         pannelloGriglia.setComponentPopupMenu(popup);
     }
 
-    protected boolean isConfigurata() {
+    void costruisciMenuShow() {
+
+        popup.remove(showSol);
+        popup.remove(clear);
+
+        resetGame = new JMenuItem("reset game");
+        resetGame.addActionListener(actListener);
+        popup.add(resetGame);
+
+        pannelloGriglia.setComponentPopupMenu(popup);
+    }
+
+
+    private boolean isConfigurata() {
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -280,7 +298,6 @@ public class GrigliaGUI extends Subject {
                 grigliaCelle[c.getRiga()][c.getColonna()].updateUI();
             }
         }
-
     }
 
     public void evidenziaSoluzioniScorrette() {
@@ -296,9 +313,7 @@ public class GrigliaGUI extends Subject {
                             grigliaCelle[c.getRiga()][c.getColonna()].mySetBackground(Color.RED);
                         else
                             grigliaCelle[c.getRiga()][c.getColonna()].mySetBackground(Color.GREEN);
-
                     }
-
                 }
             }
         }
@@ -324,7 +339,6 @@ public class GrigliaGUI extends Subject {
         }
         if (popup != null)
             pannelloGriglia.remove(popup);
-        costruisciMenuPlay();
     }
 
 
@@ -352,6 +366,32 @@ public class GrigliaGUI extends Subject {
                 kenken.printGroups();
                 redraw();
                 printCellaImpostata();
+            }
+
+            if(a.getSource() == resetConfig){
+                resetConfigurazione();
+                setState(ConfigState.getInstance());
+                kenken=new KenkenGrid(n);
+                redraw();
+            }
+
+            if(a.getSource() == resetGame){
+                setState(PlayState.getInstance());
+                redraw();
+            }
+
+            if(a.getSource() == showSol) {
+                 setState((ShowSolutionsState.getInstance()));
+            }
+
+            if(a.getSource() == clear) {
+                for (int i = 0; i < n; i++) {
+                    for (int j = 0; j < n; j++) {
+                        grigliaCelle[i][j].cleanText();
+                    }
+                }
+                pannelloGriglia.validate();
+                pannelloGriglia.repaint();
             }
 
             if (a.getSource() == inserisci) {
