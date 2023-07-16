@@ -21,6 +21,7 @@ public class PlayState implements State {
 
         griglia.settaPulsantiPlay();
         griglia.costruisciMenuPlay();
+        griglia.avviaSoluzione();
     }
 
 

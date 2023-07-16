@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,6 +30,9 @@ public class GrigliaGUI extends Subject {
     private JPopupMenu popup;
     private Gruppo gruppoTmp;
     private boolean gruppoInserito;
+    private ArrayList<int[][]> listaSoluzioni;
+    private int indiceSoluzioneCur=0;
+    private int maxNumSol;
     private State state;
     private final int BOLD = 3;
     private GroupsHistory careTaker;
@@ -68,6 +72,12 @@ public class GrigliaGUI extends Subject {
         return kenken;
     }
 
+    public int getNumSol(){return kenken.getNrSol();}
+
+    public int getIndiceSoluzioneCur(){return indiceSoluzioneCur;}
+
+    public void setMaxSol(int nrSol){this.maxNumSol=nrSol;}
+
     public void setState(State state) {
         this.state = state;
         notifyObservers();
@@ -76,6 +86,19 @@ public class GrigliaGUI extends Subject {
 
     public State getState() {
         return this.state;
+    }
+
+    public void mostraSoluzione(){
+        int[][] soluzioneCurr= listaSoluzioni.get(indiceSoluzioneCur);
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<n; j++){
+                grigliaCelle[i][j].getTextField().setText(String.valueOf(soluzioneCurr[i][j]));
+                System.out.println(grigliaCelle[i][j].getTextField().getText()+" ");
+                grigliaCelle[i][j].repaint();
+            }
+        }
+        pannelloGriglia.repaint();
+        this.indiceSoluzioneCur++;
     }
 
 
@@ -341,6 +364,21 @@ public class GrigliaGUI extends Subject {
             pannelloGriglia.remove(popup);
     }
 
+    private void printCellaImpostata() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                System.out.print(cellaImpostata[i][j] + " ");
+            }
+            System.out.println("\n");
+        }
+    }
+
+    void avviaSoluzione()
+    {
+        kenken.risolvi();
+        listaSoluzioni=kenken.getListaSoluzioni();
+    }
+
 
     class AscoltatoreEventi implements ActionListener {
 
@@ -368,23 +406,24 @@ public class GrigliaGUI extends Subject {
                 printCellaImpostata();
             }
 
-            if(a.getSource() == resetConfig){
+            if (a.getSource() == resetConfig) {
                 resetConfigurazione();
                 setState(ConfigState.getInstance());
-                kenken=new KenkenGrid(n);
+                kenken = new KenkenGrid(n);
                 redraw();
             }
 
-            if(a.getSource() == resetGame){
+            if (a.getSource() == resetGame) {
                 setState(PlayState.getInstance());
                 redraw();
             }
 
-            if(a.getSource() == showSol) {
-                 setState((ShowSolutionsState.getInstance()));
+            if (a.getSource() == showSol) {
+                setState((ShowSolutionsState.getInstance()));
+                mostraSoluzione();
             }
 
-            if(a.getSource() == clear) {
+            if (a.getSource() == clear) {
                 for (int i = 0; i < n; i++) {
                     for (int j = 0; j < n; j++) {
                         grigliaCelle[i][j].cleanText();
@@ -397,70 +436,68 @@ public class GrigliaGUI extends Subject {
             if (a.getSource() == inserisci) {
                 gruppoInserito = false;
                 int vincolo = -1;
-                String input = null;
-                JOptionPane optionPane = new JOptionPane();
+
                 for (; ; ) {
-                    input = JOptionPane.showInputDialog("Fornire il valore intero del vincolo");
+                    String input = JOptionPane.showInputDialog
+                            ("          Fornire il valore intero del vincolo \n" +
+                                    " ATTNE: per i blocchi formati da una singola cella \n" +
+                                    " è necessario inserire un intero compreso tra 1 e " + n + "   \n" +
+                                    "  ");
                     try {
                         vincolo = Integer.parseInt(input);
+                        if (vincolo < 1)
+                            throw new VincoloNegativoException();
+                        if (gruppoTmp.getListaCelle().size() == 1 && vincolo > n)
+                            throw new VincoloNonValidoException();
                         break;
+
                     } catch (RuntimeException e) {
-                        if (input == null) {
-                            careTaker.undo(kenken);
-                            redraw();
-                            kenken.printGroups();
-                            printCellaImpostata();
+                        JOptionPane.showMessageDialog(pannelloGriglia, "Inserire un intero!");
+                    } catch (VincoloNegativoException e) {
+                        JOptionPane.showMessageDialog(pannelloGriglia,
+                                "Inserire un intero positivo!!!");
+                    } catch (VincoloNonValidoException e) {
+                        JOptionPane.showMessageDialog(pannelloGriglia,
+                                "Inserire un intero positivo compreso tra 1 e  " + n + "!!!");
+                    }
+                }
+                gruppoTmp.setVincolo(vincolo);
+                String operazione = "";
+                if (gruppoTmp.getListaCelle().size() > 1) {
+                    for (; ; ) {
+                        operazione = JOptionPane.showInputDialog("Fornire l'operazione: <+><-><%><x>");
+                        if (operazione.matches("[+\\-%x]")) {
+                            gruppoTmp.setOperazione(operazione);
                             break;
                         } else
-                            JOptionPane.showMessageDialog(pannelloGriglia, "Inserire un intero!");
+                            JOptionPane.showMessageDialog(pannelloGriglia,
+                                    "Inserire operazione valida!  <+><-><%><x>");
                     }
                 }
-                if (vincolo != -1) {
-                    gruppoTmp.setVincolo(vincolo);
-                    String operazione = "";
-                    if (gruppoTmp.getListaCelle().size() > 1) {
-                        for (; ; ) {
-                            operazione = JOptionPane.showInputDialog("Fornire l'operazione: <+><-><%><x>");
-                            if (operazione.matches("[+\\-%x]")) {
-                                gruppoTmp.setOperazione(operazione);
-                                break;
-                            } else
-                                JOptionPane.showMessageDialog(pannelloGriglia,
-                                        "Inserire operazione valida!  <+><-><%><x>");
-                        }
-                    }
-                    for (Coordinate c : gruppoTmp.getListaCelle()) {
-                        int j = c.getColonna();
-                        int i = c.getRiga();
-                        grigliaCelle[i][j].mySetBackground(Color.WHITE);
-                        inserisciBordi(c, gruppoTmp);
-                    }
 
-                    careTaker.save(kenken.getMemento());
-                    redo.setEnabled(false);
-                    kenken.printGroups();
-                    kenken.addGroup(gruppoTmp);
+
+                for (Coordinate c : gruppoTmp.getListaCelle()) {
+                    int j = c.getColonna();
+                    int i = c.getRiga();
+                    grigliaCelle[i][j].mySetBackground(Color.WHITE);
+                    inserisciBordi(c, gruppoTmp);
                 }
+
+                careTaker.save(kenken.getMemento());
+                redo.setEnabled(false);
+                kenken.printGroups();
+                kenken.addGroup(gruppoTmp);
+
 
                 if (isConfigurata()) {
                     setState(PlayState.getInstance());
-                    kenken.risolvi();
+                    state.intercettaClick(GrigliaGUI.this);
                     System.out.println(kenken.getNrSol());
                 }
                 undo.setEnabled(true);
                 drawVincolo(gruppoTmp);
+
             }
         }
     }
-
-    private void printCellaImpostata() {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                System.out.print(cellaImpostata[i][j] + " ");
-            }
-            System.out.println("\n");
-        }
-    }
-
-
 }

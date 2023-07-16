@@ -68,6 +68,24 @@ class Finestra extends JFrame {
                     salvataggio = new SalvataggioConfigurazione();
                     salvataggio.salvaConNome(grigliaGUI);
                 }
+                plsStart.setEnabled(false);
+                /*
+                int nrSol=0;
+                for (; ; ) {
+
+                    String input = JOptionPane.showInputDialog
+                            (" Inserisci il massimo numero di soluzioni da calcolare! ");
+                    try {
+                        nrSol = Integer.parseInt(input);
+                        break;
+
+                    } catch (RuntimeException e) {
+                        JOptionPane.showMessageDialog(pannelloGriglia, "Inserire un intero!");
+                    }
+                }
+                grigliaGUI.setMaxSol(nrSol);
+
+                 */
             }
             if (a.getSource() == jmiHelp)
                 JOptionPane.showMessageDialog(null,
@@ -85,10 +103,26 @@ class Finestra extends JFrame {
                 grigliaGUI = salvataggio.apri();
                 impostaObserver();
                 grigliaGUI.setState(PlayState.getInstance());
-                grigliaGUI.getKenken().risolvi();  //rivedi
                 pannelloGriglia = grigliaGUI.getPannelloGriglia();
                 add(pannelloGriglia, BorderLayout.CENTER);
                 pannelloGriglia.updateUI();
+            }
+
+            if(a.getSource() == plsNext){
+                if(grigliaGUI.getIndiceSoluzioneCur()== grigliaGUI.getNumSol()-1)
+                    JOptionPane.showMessageDialog(null, "Sei arrivato all'ultima soluzione");
+                else {
+                    grigliaGUI.mostraSoluzione();
+                }
+            }
+
+            if (a.getSource() == plsPrev) {
+
+                if (grigliaGUI.getIndiceSoluzioneCur() == 0)
+                    JOptionPane.showMessageDialog(null, "Sei arrivato alla prima soluzione");
+                else {
+                    grigliaGUI.mostraSoluzione();
+                }
             }
 
         }
