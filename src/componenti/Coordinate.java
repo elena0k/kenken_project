@@ -7,15 +7,14 @@ public class Coordinate implements Serializable {
     private int riga;
     private int colonna;
 
-    public Coordinate(int riga, int colonna){
-        this.riga=riga;
-        this.colonna=colonna;
+    public Coordinate(int riga, int colonna) {
+        this.riga = riga;
+        this.colonna = colonna;
     }
 
-    public Coordinate(Coordinate other)
-    {
-        this.riga=other.riga;
-        this.colonna=other.colonna;
+    public Coordinate(Coordinate other) {
+        this.riga = other.riga;
+        this.colonna = other.colonna;
     }
 
     public int getRiga() {

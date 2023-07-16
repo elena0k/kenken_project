@@ -1,7 +1,6 @@
 package gestore_GUI;
 
 import observer.CheckObserver;
-
 import observer.NextPrevObserver;
 import observer.StartObserver;
 import strategySalvataggio.Salvataggio;
@@ -14,14 +13,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-class Finestra extends JFrame
-{
+class Finestra extends JFrame {
 
     private int n;
     private GrigliaGUI grigliaGUI;
 
     private JMenuItem jmiApri, jmiSalva, jmiSalvaConNome,
-            jmiHelp, jmiEsci, celle3,celle4,celle5,celle6;
+            jmiHelp, jmiEsci, celle3, celle4, celle5, celle6;
     private JPanel pannelloGriglia;
     private JPanel pannelloPulsanti;
     private JButton plsCheck;
@@ -33,63 +31,62 @@ class Finestra extends JFrame
     private Salvataggio salvataggio;
     private int indiceSoluzioneAttuale;
 
-    private final int BOLD=3;
-    private final int DEFAULT=4;
+    private final int BOLD = 3;
+    private final int DEFAULT = 4;
 
 
-    class AscoltatoreEventi implements ActionListener
-    {
+    class AscoltatoreEventi implements ActionListener {
         Finestra f;
+
         public void actionPerformed(ActionEvent a) {
 
-            if(a.getSource()==celle3) {
+            if (a.getSource() == celle3) {
                 resizeGriglia(3);
                 grigliaGUI.setState(ConfigState.getInstance());
             }
-            if(a.getSource()==celle4) {
+            if (a.getSource() == celle4) {
                 resizeGriglia(4);
                 grigliaGUI.setState(ConfigState.getInstance());
             }
-            if(a.getSource()==celle5) {
+            if (a.getSource() == celle5) {
                 resizeGriglia(5);
                 grigliaGUI.setState(ConfigState.getInstance());
             }
-            if(a.getSource()==celle6) {
+            if (a.getSource() == celle6) {
                 resizeGriglia(6);
                 grigliaGUI.setState(ConfigState.getInstance());
             }
-            if(a.getSource()==plsStart)
-            {
-                int choice=0;
-                if(!grigliaGUI.haSoluzione())
+            if (a.getSource() == plsStart) {
+                int choice = 0;
+                if (!grigliaGUI.haSoluzione())
                     JOptionPane.showMessageDialog(null,
                             "La configurazione selezionata non presenta soluzioni!");
                 else
                     choice = JOptionPane.showConfirmDialog(null,
                             "Vuoi salvare la configurazione?");
                 if (choice == JOptionPane.YES_OPTION) {
-                    salvataggio=new SalvataggioConfigurazione();
+                    salvataggio = new SalvataggioConfigurazione();
                     salvataggio.salvaConNome(grigliaGUI);
                 }
             }
-            if(a.getSource()==jmiHelp)
+            if (a.getSource() == jmiHelp)
                 JOptionPane.showMessageDialog(null,
                         "-Puoi personalizzare la difficoltà dalla barra SIZE. \n" +
                                 "-Usa il pulsante CHECK per verificare che tuttu i numeri \n" +
                                 " inseriti nei blocchi rispettino i vincoli. \n" +
                                 "-I numeri all'interno di uno stesso blocco possono ripetersi \n" +
                                 " a patto che non si ripetano sulla riga o sulla colonna! \n" +
-                                "-Usa i pulsanti NEXT e PREVIOUS per navigare tra le soluzioni." );
+                                "-Usa i pulsanti NEXT e PREVIOUS per navigare tra le soluzioni.");
 
-            if(a.getSource()==jmiApri)
-            {
+            if (a.getSource() == jmiApri) {
                 //TODO rivedere
-                if(pannelloGriglia != null)
+                if (pannelloGriglia != null)
                     remove(pannelloGriglia);
-                grigliaGUI=salvataggio.apri();
+                grigliaGUI = salvataggio.apri();
+                impostaObserver();
                 grigliaGUI.setState(PlayState.getInstance());
                 grigliaGUI.getKenken().risolvi();  //rivedi
-                pannelloGriglia= grigliaGUI.getPannelloGriglia();
+                pannelloGriglia = grigliaGUI.getPannelloGriglia();
                 add(pannelloGriglia, BorderLayout.CENTER);
                 pannelloGriglia.updateUI();
             }
@@ -98,18 +95,17 @@ class Finestra extends JFrame
     }
 
 
-    public Finestra(int n)
-    {
+    public Finestra(int n) {
         setTitle("KenkenGUI ");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         AscoltatoreEventi actListener = new AscoltatoreEventi();
 
         //TODO chiedo all'utente il tipo di salvataggio
-        salvataggio=new SalvataggioConfigurazione();
-        this.n=n;
-        grigliaGUI= new GrigliaGUI(n);
-        pannelloGriglia= grigliaGUI.getPannelloGriglia();
+        salvataggio = new SalvataggioConfigurazione();
+        this.n = n;
+        grigliaGUI = new GrigliaGUI(n);
+        pannelloGriglia = grigliaGUI.getPannelloGriglia();
         //TODO fixare visibilità package e protected
         costruisciPannelloPulsanti(actListener);
         costruisciMenu(actListener);
@@ -124,7 +120,7 @@ class Finestra extends JFrame
     }
 
     private void costruisciPannelloPulsanti(AscoltatoreEventi actListener) {
-        pannelloPulsanti=new JPanel();
+        pannelloPulsanti = new JPanel();
         plsStart = new JButton("START");
         plsStart.setFont(new Font("Franklin Gothic Medium Cond", Font.BOLD, 14));
         plsStart.addActionListener(actListener);
@@ -242,36 +238,30 @@ class Finestra extends JFrame
     }
 
 
-    public void resizeGriglia(int size)
-    {
+    public void resizeGriglia(int size) {
         remove(pannelloGriglia);
         grigliaGUI = new GrigliaGUI(size);
         impostaObserver();
-        pannelloGriglia=grigliaGUI.getPannelloGriglia();
-        this.n=size;
+        pannelloGriglia = grigliaGUI.getPannelloGriglia();
+        this.n = size;
         add(pannelloGriglia, BorderLayout.CENTER);
         pannelloGriglia.updateUI();
     }
 
-    public void impostaObserver()
-    {
-        grigliaGUI.attach(new StartObserver(plsStart,grigliaGUI));
-        grigliaGUI.attach(new CheckObserver(plsCheck,grigliaGUI));
-        grigliaGUI.attach(new NextPrevObserver(plsNext,grigliaGUI));
-        grigliaGUI.attach(new NextPrevObserver(plsPrev,grigliaGUI));
+    public void impostaObserver() {
+        grigliaGUI.attach(new StartObserver(plsStart, grigliaGUI));
+        grigliaGUI.attach(new CheckObserver(plsCheck, grigliaGUI));
+        grigliaGUI.attach(new NextPrevObserver(plsNext, grigliaGUI));
+        grigliaGUI.attach(new NextPrevObserver(plsPrev, grigliaGUI));
     }
-
-
 
 
 }
 
-public class KenkenGUI
-{
-    private static final int DEFAULT=4;
+public class KenkenGUI {
+    private static final int DEFAULT = 4;
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         Finestra finestra = new Finestra(DEFAULT);
         finestra.setVisible(true);
         finestra.setResizable(false);

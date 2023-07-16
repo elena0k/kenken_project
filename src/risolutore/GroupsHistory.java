@@ -2,23 +2,24 @@ package risolutore;
 
 import memento.Memento;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class GroupsHistory { //CareTaker
 
-    private final int capacity=100;
+    private final int capacity = 100;
     private Deque<Memento> undoHistory;
     private Deque<Memento> redoHistory;
-    private int currentIndex=-1;
+    private int currentIndex = -1;
 
     public GroupsHistory() {
         undoHistory = new ArrayDeque<>();
         redoHistory = new ArrayDeque<>();
     }
 
-    public void save(Memento memento){
+    public void save(Memento memento) {
         undoHistory.push(memento);
-        if(undoHistory.size()>capacity)
+        if (undoHistory.size() > capacity)
             undoHistory.pollLast();
         redoHistory.clear();
     }
@@ -27,26 +28,25 @@ public class GroupsHistory { //CareTaker
         return !undoHistory.isEmpty();
     }
 
-    public boolean canRedo(){
+    public boolean canRedo() {
         return !redoHistory.isEmpty();
     }
 
     public void undo(KenkenGrid kenken) {
         if (canUndo()) {
-            Memento memento=undoHistory.pop();
+            Memento memento = undoHistory.pop();
             redoHistory.push(kenken.getMemento());
             kenken.setMemento(memento);
         }
     }
 
     public void redo(KenkenGrid kenken) {
-        if(canRedo()) {
+        if (canRedo()) {
             Memento memento = redoHistory.pop();
             undoHistory.push(kenken.getMemento());
             kenken.setMemento(memento);
         }
     }
-
 
 
 }

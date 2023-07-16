@@ -1,17 +1,17 @@
 package gestore_GUI;
 
-import gestore_GUI.GrigliaGUI;
 import state.State;
 
 public class ConfigState implements State {
 
-    private static ConfigState INSTANCE=null;
+    private static ConfigState INSTANCE = null;
 
-    private ConfigState(){}
+    private ConfigState() {
+    }
 
-    public static synchronized ConfigState getInstance(){
-        if(INSTANCE==null){
-            INSTANCE= new ConfigState();
+    public static synchronized ConfigState getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ConfigState();
         }
         return INSTANCE;
     }
