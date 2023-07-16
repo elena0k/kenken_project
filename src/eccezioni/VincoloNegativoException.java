@@ -1,4 +1,4 @@
-package gestore_GUI;
+package eccezioni;
 
 public class VincoloNegativoException extends Exception {
 

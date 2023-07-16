@@ -3,6 +3,8 @@ package gestore_GUI;
 import componenti.Cella;
 import componenti.Coordinate;
 import componenti.Gruppo;
+import eccezioni.VincoloNegativoException;
+import eccezioni.VincoloNonValidoException;
 import observer.Subject;
 import risolutore.GroupsHistory;
 import risolutore.KenkenGrid;
@@ -51,7 +53,8 @@ public class GrigliaGUI extends Subject {
 
         actListener = new AscoltatoreEventi();
         this.n = n;
-        kenken = new KenkenGrid(n);
+        maxNumSol=richiestaNumSoluzioni();
+        kenken = new KenkenGrid(n,maxNumSol);
         grigliaCelle = new Cella[n][n];
         matriceScelte= new int[n][n];
         resetConfigurazione();
@@ -74,6 +77,21 @@ public class GrigliaGUI extends Subject {
         //setState(ConfigState.getInstance());
         //state.intercettaClick(this);
 
+    }
+
+    private int richiestaNumSoluzioni() {
+        int ret=0;
+        for (; ; ) {
+            String input = JOptionPane.showInputDialog("Fornire il numero massimo di soluzioni da visualizzare!");
+            try {
+                ret = Integer.parseInt(input);
+                break;
+
+            } catch (RuntimeException e) {
+                JOptionPane.showMessageDialog(pannelloGriglia, "Inserire un intero!");
+            }
+        }
+            return ret;
     }
 
     //TODO proteggere il metodo o passare copia

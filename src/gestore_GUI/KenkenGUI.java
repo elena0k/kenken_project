@@ -85,6 +85,8 @@ class Finestra extends JFrame {
                     salvataggio.salvaConNome(grigliaGUI);
                 }
                 plsStart.setEnabled(false);
+                plsCheck.setText("CHECK OFF");
+                grigliaGUI.setControlloAttivo(false);
                 grigliaGUI.abilitaTextField(true);
                 grigliaGUI.abilitaPopup();
                 /*

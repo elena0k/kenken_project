@@ -20,9 +20,7 @@ public class SalvataggioConfigurazione implements Salvataggio {
                 fileDiSalvataggio = jfc.getSelectedFile();
             }
             if (fileDiSalvataggio != null) {
-                ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileDiSalvataggio));
-                oos.writeObject(grigliaGUI.getKenken().getGroups());
-                oos.close();
+                scriviOggetto(grigliaGUI);
             } else
                 JOptionPane.showMessageDialog(null, "Salvataggio non avvenuto");
         } catch (Exception exc) {
@@ -47,22 +45,26 @@ public class SalvataggioConfigurazione implements Salvataggio {
             } else {
                 if (jfc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION)
                     fileDiSalvataggio = jfc.getSelectedFile();
-                if (fileDiSalvataggio != null) {
-                    int[][] matriceTmp= new int[grigliaGUI.getN()][grigliaGUI.getN()];
-                    ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileDiSalvataggio));
-                    oos.writeObject(grigliaGUI.getN());
-                    oos.writeObject(grigliaGUI.getKenken().getGroups());
-                    for (int i = 0; i < grigliaGUI.getN(); i++)
-                        for (int j = 0; j < grigliaGUI.getN(); j++)
-                            matriceTmp[i][j] = grigliaGUI.getMatriceScelte()[i][j];
-                    oos.writeObject(matriceTmp);
-                    oos.close();
-                } else
-                    JOptionPane.showMessageDialog(null, "Salvataggio non avvenuto");
+                scriviOggetto(grigliaGUI);
             }
         } catch (Exception exc) {
             exc.printStackTrace();
         }
+    }
+
+    private void scriviOggetto(GrigliaGUI grigliaGUI) throws IOException {
+        if (fileDiSalvataggio != null) {
+            int[][] matriceTmp= new int[grigliaGUI.getN()][grigliaGUI.getN()];
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileDiSalvataggio));
+            oos.writeObject(grigliaGUI.getN());
+            oos.writeObject(grigliaGUI.getKenken().getGroups());
+            for (int i = 0; i < grigliaGUI.getN(); i++)
+                for (int j = 0; j < grigliaGUI.getN(); j++)
+                    matriceTmp[i][j] = grigliaGUI.getMatriceScelte()[i][j];
+            oos.writeObject(matriceTmp);
+            oos.close();
+        } else
+            JOptionPane.showMessageDialog(null, "Salvataggio non avvenuto");
     }
 
     @Override
