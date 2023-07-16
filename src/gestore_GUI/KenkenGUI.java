@@ -20,12 +20,8 @@ class Finestra extends JFrame {
 
     private JMenuItem jmiApri, jmiSalva, jmiSalvaConNome,
             jmiHelp, jmiEsci, celle3, celle4, celle5, celle6;
-    private JPanel pannelloGriglia;
-    private JPanel pannelloPulsanti;
-    private JButton plsCheck;
-    private JButton plsPrev;
-    private JButton plsNext;
-    private JButton plsStart;
+    private JPanel pannelloGriglia, pannelloPulsanti;
+    private JButton plsCheck,plsPrev, plsNext,plsStart;
     private JPopupMenu popup;
     private boolean hoModificheNonSalvate = false;
     private Salvataggio salvataggio;
@@ -42,22 +38,39 @@ class Finestra extends JFrame {
 
             if (a.getSource() == celle3) {
                 resizeGriglia(3);
+                celle3.setEnabled(false);
+                celle4.setEnabled(true);
+                celle5.setEnabled(true);
+                celle6.setEnabled(true);
                 grigliaGUI.setState(ConfigState.getInstance());
             }
             if (a.getSource() == celle4) {
                 resizeGriglia(4);
+                celle3.setEnabled(true);
+                celle4.setEnabled(false);
+                celle5.setEnabled(true);
+                celle6.setEnabled(true);
                 grigliaGUI.setState(ConfigState.getInstance());
             }
             if (a.getSource() == celle5) {
                 resizeGriglia(5);
+                celle3.setEnabled(true);
+                celle4.setEnabled(true);
+                celle5.setEnabled(false);
+                celle6.setEnabled(true);
                 grigliaGUI.setState(ConfigState.getInstance());
             }
             if (a.getSource() == celle6) {
                 resizeGriglia(6);
+                celle3.setEnabled(true);
+                celle4.setEnabled(true);
+                celle5.setEnabled(true);
+                celle6.setEnabled(false);
                 grigliaGUI.setState(ConfigState.getInstance());
             }
             if (a.getSource() == plsStart) {
                 int choice = 0;
+                indiceSoluzioneAttuale=0;
                 if (!grigliaGUI.haSoluzione())
                     JOptionPane.showMessageDialog(null,
                             "La configurazione selezionata non presenta soluzioni!");
@@ -69,6 +82,8 @@ class Finestra extends JFrame {
                     salvataggio.salvaConNome(grigliaGUI);
                 }
                 plsStart.setEnabled(false);
+                grigliaGUI.abilitaTextField(true);
+                grigliaGUI.abilitaPopup();
                 /*
                 int nrSol=0;
                 for (; ; ) {
@@ -109,19 +124,21 @@ class Finestra extends JFrame {
             }
 
             if(a.getSource() == plsNext){
-                if(grigliaGUI.getIndiceSoluzioneCur()== grigliaGUI.getNumSol()-1)
+                if(indiceSoluzioneAttuale == grigliaGUI.getNumSol()-1)
                     JOptionPane.showMessageDialog(null, "Sei arrivato all'ultima soluzione");
                 else {
-                    grigliaGUI.mostraSoluzione();
+                    grigliaGUI.mostraSoluzione(indiceSoluzioneAttuale);
+                    indiceSoluzioneAttuale++;
                 }
             }
 
             if (a.getSource() == plsPrev) {
 
-                if (grigliaGUI.getIndiceSoluzioneCur() == 0)
+                if (indiceSoluzioneAttuale == 0)
                     JOptionPane.showMessageDialog(null, "Sei arrivato alla prima soluzione");
                 else {
-                    grigliaGUI.mostraSoluzione();
+                    grigliaGUI.mostraSoluzione(indiceSoluzioneAttuale);
+                    indiceSoluzioneAttuale--;
                 }
             }
 
@@ -133,11 +150,13 @@ class Finestra extends JFrame {
         setTitle("KenkenGUI ");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+
         AscoltatoreEventi actListener = new AscoltatoreEventi();
 
         //TODO chiedo all'utente il tipo di salvataggio
         salvataggio = new SalvataggioConfigurazione();
         this.n = n;
+
         grigliaGUI = new GrigliaGUI(n);
         pannelloGriglia = grigliaGUI.getPannelloGriglia();
         //TODO fixare visibilità package e protected

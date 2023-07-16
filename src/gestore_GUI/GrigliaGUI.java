@@ -10,6 +10,8 @@ import state.State;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,12 +33,13 @@ public class GrigliaGUI extends Subject {
     private Gruppo gruppoTmp;
     private boolean gruppoInserito;
     private ArrayList<int[][]> listaSoluzioni;
-    private int indiceSoluzioneCur=0;
+    //private int indiceSoluzioneCur=0;
     private int maxNumSol;
     private State state;
-    private final int BOLD = 3;
     private GroupsHistory careTaker;
     private AscoltatoreEventi actListener;
+    private boolean hoModificheNonSalvate = false;
+    private int[][] matriceScelte;
     private MatteBorder border = new MatteBorder(1, 1, 1, 1, Color.black);
 
 
@@ -46,6 +49,7 @@ public class GrigliaGUI extends Subject {
         this.n = n;
         kenken = new KenkenGrid(n);
         grigliaCelle = new Cella[n][n];
+        matriceScelte= new int[n][n];
         resetConfigurazione();
         pannelloGriglia = new JPanel();
         pannelloGriglia.setLayout(new GridLayout(n, n));
@@ -59,6 +63,7 @@ public class GrigliaGUI extends Subject {
                 grigliaCelle[i][j].setN(n);
                 grigliaCelle[i][j].setFont(n);
                 grigliaCelle[i][j].mySetBorder(border);
+                gestisciModificheCella(grigliaCelle[i][j],i,j);
                 pannelloGriglia.add(grigliaCelle[i][j]);
             }
         }
@@ -74,7 +79,7 @@ public class GrigliaGUI extends Subject {
 
     public int getNumSol(){return kenken.getNrSol();}
 
-    public int getIndiceSoluzioneCur(){return indiceSoluzioneCur;}
+    //public int getIndiceSoluzioneCur(){return indiceSoluzioneCur;}
 
     public void setMaxSol(int nrSol){this.maxNumSol=nrSol;}
 
@@ -88,19 +93,33 @@ public class GrigliaGUI extends Subject {
         return this.state;
     }
 
-    public void mostraSoluzione(){
-        int[][] soluzioneCurr= listaSoluzioni.get(indiceSoluzioneCur);
+    public void mostraSoluzione(int index){
+        int[][] soluzioneCurr= listaSoluzioni.get(index);
         for(int i=0; i<n; i++) {
             for(int j=0; j<n; j++){
-                grigliaCelle[i][j].getTextField().setText(String.valueOf(soluzioneCurr[i][j]));
-                System.out.println(grigliaCelle[i][j].getTextField().getText()+" ");
+                grigliaCelle[i][j].mySetText(String.valueOf(soluzioneCurr[i][j]));
                 grigliaCelle[i][j].repaint();
             }
         }
         pannelloGriglia.repaint();
-        this.indiceSoluzioneCur++;
     }
 
+    void gestisciModificheCella(Cella cella, int i, int j) {
+        cella.setDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {aggiornaMatriceScelte(cella,i,j); printMatriceScelte();}
+            public void removeUpdate(DocumentEvent e) {aggiornaMatriceScelte(cella,i,j); printMatriceScelte();}
+            public void insertUpdate(DocumentEvent e) {aggiornaMatriceScelte(cella,i,j); printMatriceScelte();}
+        });
+    }
+
+    private void aggiornaMatriceScelte(Cella cella, int i, int j) {
+        int val;
+        hoModificheNonSalvate = true;
+        if(cella.getText().equals(""))
+            val=0;
+        else val=Integer.parseInt(cella.getText());
+        matriceScelte[i][j]=val;
+    }
 
     void impostaGruppi() {
 
@@ -225,16 +244,17 @@ public class GrigliaGUI extends Subject {
         popup = new JPopupMenu();
 
         clear = new JMenuItem("clear");
-        //clear.setEnabled(false);
         clear.addActionListener(actListener);
         popup.add(clear);
 
         showSol = new JMenuItem("reveal");
         showSol.addActionListener(actListener);
+        showSol.setEnabled(false);
         popup.add(showSol);
 
         resetConfig = new JMenuItem("reset config");
         resetConfig.addActionListener(actListener);
+        resetConfig.setEnabled(false);
         popup.add(resetConfig);
 
         pannelloGriglia.setComponentPopupMenu(popup);
@@ -271,6 +291,7 @@ public class GrigliaGUI extends Subject {
         int borderSx = 1;
         int borderDx = 1;
         Coordinate[] adiacenti = listaAdiacenti(cur);
+        int BOLD = 3;
         if (!gruppo.contains(adiacenti[0])) //top
             borderUp = BOLD;
         if (!gruppo.contains(adiacenti[1]))//left
@@ -321,6 +342,7 @@ public class GrigliaGUI extends Subject {
                 grigliaCelle[c.getRiga()][c.getColonna()].updateUI();
             }
         }
+        pulisciGriglia();
     }
 
     public void evidenziaSoluzioniScorrette() {
@@ -354,20 +376,28 @@ public class GrigliaGUI extends Subject {
         return haSoluzione;
     }
 
-    public void settaPulsantiPlay() {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                grigliaCelle[i][j].setEnabled(true);
-            }
-        }
+    public void removeOldMenu() {
+
         if (popup != null)
             pannelloGriglia.remove(popup);
     }
 
-    private void printCellaImpostata() {
+    void abilitaTextField(boolean bool){
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                grigliaCelle[i][j].setEnabled(bool);
+    }
+
+    void abilitaPopup(){
+        showSol.setEnabled(true);
+        resetConfig.setEnabled(true);
+    }
+
+    private void printMatriceScelte() {
+        System.out.println("MATRICE SCELTE");
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                System.out.print(cellaImpostata[i][j] + " ");
+                System.out.print(matriceScelte[i][j] + " ");
             }
             System.out.println("\n");
         }
@@ -377,6 +407,15 @@ public class GrigliaGUI extends Subject {
     {
         kenken.risolvi();
         listaSoluzioni=kenken.getListaSoluzioni();
+    }
+
+    private void pulisciGriglia() {
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++) {
+                grigliaCelle[i][j].cleanText();
+                grigliaCelle[i][j].repaint();
+            }
+        pannelloGriglia.repaint();
     }
 
 
@@ -392,7 +431,6 @@ public class GrigliaGUI extends Subject {
                     undo.setEnabled(true);
                 kenken.printGroups();
                 redraw();
-                printCellaImpostata();
             }
 
             if (a.getSource() == undo) {
@@ -403,7 +441,6 @@ public class GrigliaGUI extends Subject {
                     redo.setEnabled(true);
                 kenken.printGroups();
                 redraw();
-                printCellaImpostata();
             }
 
             if (a.getSource() == resetConfig) {
@@ -420,17 +457,11 @@ public class GrigliaGUI extends Subject {
 
             if (a.getSource() == showSol) {
                 setState((ShowSolutionsState.getInstance()));
-                mostraSoluzione();
+                mostraSoluzione(0);
             }
 
             if (a.getSource() == clear) {
-                for (int i = 0; i < n; i++) {
-                    for (int j = 0; j < n; j++) {
-                        grigliaCelle[i][j].cleanText();
-                    }
-                }
-                pannelloGriglia.validate();
-                pannelloGriglia.repaint();
+                pulisciGriglia();
             }
 
             if (a.getSource() == inserisci) {
@@ -500,4 +531,6 @@ public class GrigliaGUI extends Subject {
             }
         }
     }
+
+
 }
