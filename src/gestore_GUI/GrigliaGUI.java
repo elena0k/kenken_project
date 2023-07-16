@@ -185,14 +185,17 @@ public class GrigliaGUI extends Subject {
 
     private boolean verificaGruppo(Gruppo gruppo){
         LinkedList<Coordinate> celle = gruppo.getListaCelle();
-        int risultato=0;
-        for (Coordinate c : celle) {
-            if (gruppo.getOperazione().equals("+"))
-                risultato += matriceScelte[c.getRiga()][c.getColonna()];
-            if (gruppo.getOperazione().equals("-") || gruppo.getOperazione().equals("%"))
-                risultato = ordina(matriceScelte[c.getRiga()][c.getColonna()], risultato, gruppo.getOperazione());
-            if (gruppo.getOperazione().equals("x"))
-                risultato *= matriceScelte[c.getRiga()][c.getColonna()];
+        Coordinate coord=gruppo.getListaCelle().get(0);
+        int risultato=matriceScelte[coord.getRiga()][coord.getColonna()];
+        for (int i=1; i<celle.size();i++) {
+            int riga=celle.get(i).getRiga();
+            int colonna=celle.get(i).getColonna();
+            if ("+".equals(gruppo.getOperazione()))
+                risultato += matriceScelte[riga][colonna];
+            if ("-".equals(gruppo.getOperazione()) || "%".equals(gruppo.getOperazione()))
+                risultato = ordina(matriceScelte[riga][colonna], risultato, gruppo.getOperazione());
+            if ("x".equals(gruppo.getOperazione()))
+                risultato *= matriceScelte[riga][colonna];
         }
         return risultato==gruppo.getVincolo();
     }
@@ -600,7 +603,6 @@ public class GrigliaGUI extends Subject {
 
                 if (isConfigurata()) {
                     setState(PlayState.getInstance());
-                    state.intercettaClick(GrigliaGUI.this);
                     System.out.println(kenken.getNrSol());
                 }
                 undo.setEnabled(true);

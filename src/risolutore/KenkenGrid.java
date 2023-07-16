@@ -21,11 +21,18 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
     public KenkenGrid(int dim) {
         this.dim = dim;
         this.griglia = new int[dim][dim];
-
         nrSol = 0;
         listaSoluzioni = new ArrayList<>();
         listaGruppi = new LinkedList<>();
+    }
 
+    public KenkenGrid(int dim, int maxSol) {
+        super(maxSol);
+        this.dim = dim;
+        this.griglia = new int[dim][dim];
+        nrSol = 0;
+        listaSoluzioni = new ArrayList<>();
+        listaGruppi = new LinkedList<>();
     }
 
     public int getNrSol() {
@@ -246,7 +253,20 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
         Coordinate c6 = new Coordinate(2, 0);
         Coordinate c7 = new Coordinate(2, 1);
         Coordinate c8 = new Coordinate(2, 2);
+
         LinkedList<Coordinate> l1 = new LinkedList<>();
+
+        l1.add(c0);
+        l1.add(c1);
+        l1.add(c2);
+        l1.add(c5);
+        l1.add(c3);
+        l1.add(c4);
+        l1.add(c6);
+        l1.add(c7);
+        l1.add(c8);
+
+        /*
         LinkedList<Coordinate> l2 = new LinkedList<>();
         LinkedList<Coordinate> l3 = new LinkedList<>();
         LinkedList<Coordinate> l4 = new LinkedList<>();
@@ -261,7 +281,7 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
         l4.add(c7);
         l4.add(c8);
 
-        Gruppo g1 = new Gruppo(3, "%", l1);
+        Gruppo g1 = new Gruppo(18, "+", l1);
         Gruppo g2 = new Gruppo(2, "%", l2);
         Gruppo g3 = new Gruppo(6, "x", l3);
         Gruppo g4 = new Gruppo(1, "-", l4);
@@ -272,8 +292,16 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
         gruppi.add(g3);
         gruppi.add(g4);
 
-        KenkenGrid kenken = new KenkenGrid(3);
+
+         */
+        Gruppo g1 = new Gruppo(18, "+", l1);
+        KenkenGrid kenken = new KenkenGrid(3,8);
+        kenken.addGroup(g1);
+        //kenken.addGroup(g2);
+        //kenken.addGroup(g3);
+        //kenken.addGroup(g4);
         kenken.risolvi();
+        System.out.println(kenken.getNrSol());
     }
 
 
