@@ -147,6 +147,7 @@ class Finestra extends JFrame {
                 }
             }
 
+            //TODO ripristinare checkOff in caso di reset config
             if(a.getSource() == plsCheck){
                 checkPressCount++;
                 if (checkPressCount % 2 == 1) {

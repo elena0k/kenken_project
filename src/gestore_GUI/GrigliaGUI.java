@@ -164,19 +164,18 @@ public class GrigliaGUI extends Subject {
         }
     }
 
-    private boolean rispettaVincoli(){
-        boolean ret=true;
+    private void rispettaVincoli(){
         for(Gruppo g: kenken.getGroups()){
+            boolean gruppoIncompleto=false;
             for(Coordinate c: g.getListaCelle())
-                if(matriceScelte[c.getRiga()][c.getColonna()]==0)
-                    return true; //gruppo incompleto
-
-            if(!verificaGruppo(g)) {
+                if(matriceScelte[c.getRiga()][c.getColonna()]==0) {
+                    gruppoIncompleto = true; //gruppo incompleto
+                    break;
+                }
+            if(!gruppoIncompleto && !verificaGruppo(g)) {
                 segnalaGruppo(g);
-                ret = false;
             }
         }
-        return ret;
     }
 
     private void segnalaGruppo(Gruppo g){
