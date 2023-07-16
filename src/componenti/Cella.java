@@ -13,40 +13,40 @@ import java.awt.event.MouseAdapter;
 
 public class Cella extends JPanel {
 
-    private JTextField text= new JTextField();
+    private JTextField text = new JTextField();
     private JTextField vincolo;
     private PlainDocument doc;
     private int n;
 
     public Cella() {
-        doc=new PlainDocument();
+        doc = new PlainDocument();
         filtraText();
         setTextLayoutConfig();
         text.setDocument(doc);
     }
 
-    public void setN(int n)
-    {
-        this.n=n;
+    public void setN(int n) {
+        this.n = n;
     }
 
     public void filtraText() {
-        doc.setDocumentFilter(new DocumentFilter(){
+        doc.setDocumentFilter(new DocumentFilter() {
             public void insertString(FilterBypass fb, int offset, String text, AttributeSet attrs) throws BadLocationException {
                 if (!text.matches("//d")) {
                     return; // Ignora l'inserimento
                 }
-                int num=Integer.parseInt(text);
-                if(num>0 && num<=n)
+                int num = Integer.parseInt(text);
+                if (num > 0 && num <= n)
                     super.insertString(fb, offset, text, attrs);
             }
+
             @Override
             public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
                 if (!text.matches("\\d")) {
                     return; // Ignora la sostituzione
                 }
-                int num=Integer.parseInt(text);
-                if(num>0 && num<=n)
+                int num = Integer.parseInt(text);
+                if (num > 0 && num <= n)
                     super.replace(fb, offset, length, text, attrs);
             }
         });
@@ -85,13 +85,13 @@ public class Cella extends JPanel {
     }
 
     public void setVincolo(int num, String op) {
-        vincolo=new JTextField();
-        if(op!=null)
-            vincolo.setText(""+num+op);
+        vincolo = new JTextField();
+        if (op != null)
+            vincolo.setText("" + num + op);
         else
-            vincolo.setText(num+"");
+            vincolo.setText(num + "");
         vincolo.setEnabled(false);
-        add(vincolo,BorderLayout.NORTH);
+        add(vincolo, BorderLayout.NORTH);
         repaint();
     }
 
@@ -102,43 +102,38 @@ public class Cella extends JPanel {
     }
 
     public boolean isCellaSemplice() {
-        return vincolo==null;
+        return vincolo == null;
     }
 
 
     public void setFont(int n) {
-        if(n==6 || n==5)
+        if (n == 6 || n == 5)
             text.setFont(new Font("Courier New", Font.BOLD, 20));
-        else if(n==3 || n==4)
+        else if (n == 3 || n == 4)
             text.setFont(new Font("Courier New", Font.BOLD, 35));
     }
 
 
-    public JTextField getTextField()
-    {
+    public JTextField getTextField() {
         return text;
     }
 
-    public void mySetBackground(Color color)
-    {
+    public void mySetBackground(Color color) {
         text.setBackground(color);
-        if(vincolo!=null)
+        if (vincolo != null)
             vincolo.setBackground(color);
     }
 
-    public String getText()
-    {
+    public String getText() {
         return text.getText();
     }
 
 
-    public void setEnabled(boolean bool)
-    {
+    public void setEnabled(boolean bool) {
         text.setEnabled(bool);
     }
 
-    public void mySetBorder(Border border)
-    {
+    public void mySetBorder(Border border) {
         setBorder(border);
     }
 

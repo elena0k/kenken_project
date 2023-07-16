@@ -1,24 +1,24 @@
 package gestore_GUI;
 
-import gestore_GUI.GrigliaGUI;
 import state.State;
 
 public class PlayState implements State {
 
-    private static PlayState INSTANCE=null;
+    private static PlayState INSTANCE = null;
 
-    private PlayState(){}
+    private PlayState() {
+    }
 
-    public static synchronized PlayState getInstance(){
-        if(INSTANCE==null){
-            INSTANCE= new PlayState();
+    public static synchronized PlayState getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new PlayState();
         }
         return INSTANCE;
     }
 
     @Override
     public void intercettaClick(GrigliaGUI griglia) {
-       griglia.settaPulsantiPlay();
+        griglia.settaPulsantiPlay();
     }
 
 

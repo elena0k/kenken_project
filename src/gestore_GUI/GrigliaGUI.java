@@ -3,7 +3,6 @@ package gestore_GUI;
 import componenti.Cella;
 import componenti.Coordinate;
 import componenti.Gruppo;
-import observer.Observer;
 import observer.Subject;
 import risolutore.GroupsHistory;
 import risolutore.KenkenGrid;
@@ -31,25 +30,24 @@ public class GrigliaGUI extends Subject {
     private Gruppo gruppoTmp;
     private boolean gruppoInserito;
     private State state;
-    private final int BOLD=3;
+    private final int BOLD = 3;
     private GroupsHistory careTaker;
     private AscoltatoreEventi actListener;
-    private MatteBorder border= new MatteBorder(1,1,1,1,Color.black);
-
+    private MatteBorder border = new MatteBorder(1, 1, 1, 1, Color.black);
 
 
     public GrigliaGUI(int n) {
 
         actListener = new AscoltatoreEventi();
-        this.n=n;
-        kenken= new KenkenGrid(n);
-        grigliaCelle =new Cella[n][n];
+        this.n = n;
+        kenken = new KenkenGrid(n);
+        grigliaCelle = new Cella[n][n];
         resetConfigurazione();
-        pannelloGriglia= new JPanel();
+        pannelloGriglia = new JPanel();
         pannelloGriglia.setLayout(new GridLayout(n, n));
         pannelloGriglia.setSize(450, 450);
-        gruppoInserito=false;
-        careTaker= new GroupsHistory();
+        gruppoInserito = false;
+        careTaker = new GroupsHistory();
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -65,27 +63,23 @@ public class GrigliaGUI extends Subject {
 
     }
 
-//TODO proteggere il metodo o passare copia
-    public KenkenGrid getKenken()
-    {
+    //TODO proteggere il metodo o passare copia
+    public KenkenGrid getKenken() {
         return kenken;
     }
 
-    public void setState(State state)
-    {
-        this.state=state;
+    public void setState(State state) {
+        this.state = state;
         notifyObservers();
         state.intercettaClick(this);
     }
 
-    public State getState()
-    {
+    public State getState() {
         return this.state;
     }
 
 
-    void impostaGruppi()
-    {
+    void impostaGruppi() {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
 
@@ -99,10 +93,7 @@ public class GrigliaGUI extends Subject {
 
                         for (int i = 0; i < n; i++) {
                             for (int j = 0; j < n; j++) {
-                                if (gruppoInserito)
-                                    inserisci.setEnabled(true);
-                                else
-                                    inserisci.setEnabled(false);
+                                inserisci.setEnabled(gruppoInserito);
 
                                 if (e.getSource() == grigliaCelle[i][j].getTextField()) {
                                     if (e.getButton() == MouseEvent.BUTTON1) {
@@ -131,54 +122,56 @@ public class GrigliaGUI extends Subject {
     }
 
 
-    public int getN(){return this.n;}
+    public int getN() {
+        return this.n;
+    }
 
     private boolean adiacenti(Coordinate cur, LinkedList<Coordinate> listaCelle) {
 
-        for(Coordinate c:listaCelle) {
-            if(adiacenteDx(c,cur) || adiacenteSx(c,cur) || adiacenteUp(c,cur) || adiacenteDown(c,cur))
+        for (Coordinate c : listaCelle) {
+            if (adiacenteDx(c, cur) || adiacenteSx(c, cur) || adiacenteUp(c, cur) || adiacenteDown(c, cur))
                 return true;
         }
         return false;
     }
 
     private boolean adiacenteDown(Coordinate c, Coordinate cur) {
-        return c.getColonna()==cur.getColonna() && c.getRiga()+1==cur.getRiga();
+        return c.getColonna() == cur.getColonna() && c.getRiga() + 1 == cur.getRiga();
     }
 
     private boolean adiacenteUp(Coordinate c, Coordinate cur) {
-        return c.getColonna()==cur.getColonna() && c.getRiga()-1==cur.getRiga();
+        return c.getColonna() == cur.getColonna() && c.getRiga() - 1 == cur.getRiga();
     }
 
     private boolean adiacenteSx(Coordinate c, Coordinate cur) {
-        return c.getRiga()==cur.getRiga() && c.getColonna()-1==cur.getColonna();
+        return c.getRiga() == cur.getRiga() && c.getColonna() - 1 == cur.getColonna();
     }
 
     private boolean adiacenteDx(Coordinate c, Coordinate cur) {
-        return c.getRiga()==cur.getRiga() && c.getColonna()+1==cur.getColonna();
+        return c.getRiga() == cur.getRiga() && c.getColonna() + 1 == cur.getColonna();
     }
 
     private Coordinate[] listaAdiacenti(Coordinate c) {
 
-        Coordinate[] ret= new Coordinate[4];
-        Coordinate top= new Coordinate(c.getRiga()-1, c.getColonna());
-        if(top.getRiga()>=0)
-            ret[0]=top;
-        Coordinate down=new Coordinate(c.getRiga()+1, c.getColonna());
-        if(down.getRiga()<=n)
-            ret[2]=down;
-        Coordinate left= new Coordinate(c.getRiga(), c.getColonna()-1);
-        if(left.getColonna()>=0)
-            ret[1]=left;
-        Coordinate right= new Coordinate(c.getRiga(), c.getColonna()+1);
-        if(right.getColonna()<=n)
-            ret[3]=right;
+        Coordinate[] ret = new Coordinate[4];
+        Coordinate top = new Coordinate(c.getRiga() - 1, c.getColonna());
+        if (top.getRiga() >= 0)
+            ret[0] = top;
+        Coordinate down = new Coordinate(c.getRiga() + 1, c.getColonna());
+        if (down.getRiga() <= n)
+            ret[2] = down;
+        Coordinate left = new Coordinate(c.getRiga(), c.getColonna() - 1);
+        if (left.getColonna() >= 0)
+            ret[1] = left;
+        Coordinate right = new Coordinate(c.getRiga(), c.getColonna() + 1);
+        if (right.getColonna() <= n)
+            ret[3] = right;
         return ret;
 
     }
 
     public void resetConfigurazione() {
-        cellaImpostata= new boolean[n][n];
+        cellaImpostata = new boolean[n][n];
     }
 
     protected JPanel getPannelloGriglia() {
@@ -221,8 +214,8 @@ public class GrigliaGUI extends Subject {
 
     protected boolean isConfigurata() {
 
-        for(int i=0; i<n; i++) {
-            for(int j=0; j<n; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 if (!cellaImpostata[i][j])
                     return false;
             }
@@ -232,43 +225,40 @@ public class GrigliaGUI extends Subject {
 
     private void inserisciBordi(Coordinate cur, Gruppo gruppo) {
 
-        int borderDown=1;
-        int borderUp=1;
-        int borderSx=1;
-        int borderDx=1;
-        Coordinate[] adiacenti= listaAdiacenti(cur);
-        if(!gruppo.contains(adiacenti[0])) //top
-            borderUp=BOLD;
-        if(!gruppo.contains(adiacenti[1]))//left
-            borderSx=BOLD;
-        if(!gruppo.contains(adiacenti[2]))//bottom
-            borderDown=BOLD;
-        if(!gruppo.contains(adiacenti[3]))//right
-            borderDx=BOLD;
-        MatteBorder border= new MatteBorder(borderUp,borderSx,borderDown,borderDx,Color.BLACK);
+        int borderDown = 1;
+        int borderUp = 1;
+        int borderSx = 1;
+        int borderDx = 1;
+        Coordinate[] adiacenti = listaAdiacenti(cur);
+        if (!gruppo.contains(adiacenti[0])) //top
+            borderUp = BOLD;
+        if (!gruppo.contains(adiacenti[1]))//left
+            borderSx = BOLD;
+        if (!gruppo.contains(adiacenti[2]))//bottom
+            borderDown = BOLD;
+        if (!gruppo.contains(adiacenti[3]))//right
+            borderDx = BOLD;
+        MatteBorder border = new MatteBorder(borderUp, borderSx, borderDown, borderDx, Color.BLACK);
         grigliaCelle[cur.getRiga()][cur.getColonna()].mySetBorder(border);
 
     }
 
-    private Coordinate eleggiIndice(Gruppo gruppo)
-    {
-        List<Coordinate> listaCelle=gruppo.getListaCelle();
+    private Coordinate eleggiIndice(Gruppo gruppo) {
+        List<Coordinate> listaCelle = gruppo.getListaCelle();
         int minR = Integer.MAX_VALUE;
-        int minC=Integer.MAX_VALUE;
-        for(Coordinate c:listaCelle)
-        {
-            if(c.getRiga()< minR && c.getColonna()<minC) {
+        int minC = Integer.MAX_VALUE;
+        for (Coordinate c : listaCelle) {
+            if (c.getRiga() < minR && c.getColonna() < minC) {
                 minR = c.getRiga();
                 minC = c.getColonna();
-            }
-            else if(c.getRiga()==minR && c.getColonna()<minC)
-                minC=c.getColonna();
+            } else if (c.getRiga() == minR && c.getColonna() < minC)
+                minC = c.getColonna();
 
-            else if(c.getColonna()==minC && c.getRiga()<minR)
-                minR=c.getRiga();
+            else if (c.getColonna() == minC && c.getRiga() < minR)
+                minR = c.getRiga();
 
         }
-        return new Coordinate(minR,minC);
+        return new Coordinate(minR, minC);
     }
 
     public void redraw() {
@@ -276,32 +266,31 @@ public class GrigliaGUI extends Subject {
             for (int j = 0; j < n; j++) {
                 grigliaCelle[i][j].mySetBorder(border);
                 grigliaCelle[i][j].mySetBackground(Color.WHITE);
-                if(!grigliaCelle[i][j].isCellaSemplice()) {
+                if (!grigliaCelle[i][j].isCellaSemplice()) {
                     grigliaCelle[i][j].cleanVincolo();
                 }
             }
         }
         resetConfigurazione();
-        for(Gruppo g: kenken.getGroups()) {
+        for (Gruppo g : kenken.getGroups()) {
             for (Coordinate c : g.getListaCelle()) {
-                inserisciBordi(c,g);
+                inserisciBordi(c, g);
                 drawVincolo(g);
-                cellaImpostata[c.getRiga()][c.getColonna()]=true;
+                cellaImpostata[c.getRiga()][c.getColonna()] = true;
                 grigliaCelle[c.getRiga()][c.getColonna()].updateUI();
             }
         }
 
     }
 
-    public void evidenziaSoluzioniScorrette()
-    {
-        if(kenken.getNrSol()==1) {
-            int[][] soluzione=kenken.getListaSoluzioni().get(0);
+    public void evidenziaSoluzioniScorrette() {
+        if (kenken.getNrSol() == 1) {
+            int[][] soluzione = kenken.getListaSoluzioni().get(0);
             for (Gruppo g : kenken.getGroups()) {
                 for (Coordinate c : g.getListaCelle()) {
-                    String elem=grigliaCelle[c.getRiga()][c.getColonna()].getText();
-                    if(elem != null && !elem.equals("")) {
-                        System.out.println("dio banana:  "+elem);
+                    String elem = grigliaCelle[c.getRiga()][c.getColonna()].getText();
+                    if (elem != null && !elem.equals("")) {
+                        System.out.println("dio banana:  " + elem);
                         int valoreInserito = Integer.parseInt(grigliaCelle[c.getRiga()][c.getColonna()].getText());
                         if (valoreInserito != soluzione[c.getRiga()][c.getColonna()])
                             grigliaCelle[c.getRiga()][c.getColonna()].mySetBackground(Color.RED);
@@ -316,25 +305,24 @@ public class GrigliaGUI extends Subject {
     }
 
     private void drawVincolo(Gruppo gruppo) {
-        Coordinate coordVincolo =eleggiIndice(gruppo);
-        Cella cellaSemplice=grigliaCelle[coordVincolo.getRiga()][coordVincolo.getColonna()];
-        cellaSemplice.setVincolo(gruppo.getVincolo(),gruppo.getOperazione());
+        Coordinate coordVincolo = eleggiIndice(gruppo);
+        Cella cellaSemplice = grigliaCelle[coordVincolo.getRiga()][coordVincolo.getColonna()];
+        cellaSemplice.setVincolo(gruppo.getVincolo(), gruppo.getOperazione());
     }
 
-    public boolean haSoluzione()
-    {
-        boolean haSoluzione=kenken.getNrSol()!=0;
+    public boolean haSoluzione() {
+        boolean haSoluzione = kenken.getNrSol() != 0;
         System.out.println(kenken.getNrSol());
         return haSoluzione;
     }
 
     public void settaPulsantiPlay() {
-        for(int i=0; i<n;i++) {
-            for(int j=0; j<n; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 grigliaCelle[i][j].setEnabled(true);
             }
         }
-        if(popup != null)
+        if (popup != null)
             pannelloGriglia.remove(popup);
         costruisciMenuPlay();
     }
@@ -344,59 +332,53 @@ public class GrigliaGUI extends Subject {
 
         public void actionPerformed(ActionEvent a) {
 
-            if(a.getSource()==redo)
-            {
+            if (a.getSource() == redo) {
                 careTaker.redo(kenken);
-                if(!careTaker.canRedo())
+                if (!careTaker.canRedo())
                     redo.setEnabled(false);
-                if(careTaker.canUndo())
+                if (careTaker.canUndo())
                     undo.setEnabled(true);
                 kenken.printGroups();
                 redraw();
                 printCellaImpostata();
             }
 
-            if(a.getSource()==undo){
+            if (a.getSource() == undo) {
                 careTaker.undo(kenken);
-                if(!careTaker.canUndo())
+                if (!careTaker.canUndo())
                     undo.setEnabled(false);
                 else
                     redo.setEnabled(true);
                 kenken.printGroups();
                 redraw();
                 printCellaImpostata();
-
-
             }
 
-            if(a.getSource()==inserisci) {
-                gruppoInserito=false;
-                int vincolo=-1;
-                String input=null;
-                JOptionPane optionPane= new JOptionPane();
-                for(;;) {
+            if (a.getSource() == inserisci) {
+                gruppoInserito = false;
+                int vincolo = -1;
+                String input = null;
+                JOptionPane optionPane = new JOptionPane();
+                for (; ; ) {
                     input = JOptionPane.showInputDialog("Fornire il valore intero del vincolo");
                     try {
-                        vincolo =Integer.parseInt(input);
+                        vincolo = Integer.parseInt(input);
                         break;
                     } catch (RuntimeException e) {
-                        if(input==null) {
+                        if (input == null) {
                             careTaker.undo(kenken);
                             redraw();
                             kenken.printGroups();
                             printCellaImpostata();
                             break;
-                        }
-                        else
+                        } else
                             JOptionPane.showMessageDialog(pannelloGriglia, "Inserire un intero!");
-
                     }
-
                 }
-                if(vincolo!=-1) {
+                if (vincolo != -1) {
                     gruppoTmp.setVincolo(vincolo);
                     String operazione = "";
-                    if (gruppoTmp.getListaCelle().size() > 1 && input != null) {
+                    if (gruppoTmp.getListaCelle().size() > 1) {
                         for (; ; ) {
                             operazione = JOptionPane.showInputDialog("Fornire l'operazione: <+><-><%><x>");
                             if (operazione.matches("[+\\-%x]")) {
@@ -411,7 +393,7 @@ public class GrigliaGUI extends Subject {
                         int j = c.getColonna();
                         int i = c.getRiga();
                         grigliaCelle[i][j].mySetBackground(Color.WHITE);
-                        inserisciBordi(c,gruppoTmp);
+                        inserisciBordi(c, gruppoTmp);
                     }
 
                     careTaker.save(kenken.getMemento());
@@ -420,7 +402,7 @@ public class GrigliaGUI extends Subject {
                     kenken.addGroup(gruppoTmp);
                 }
 
-                if(isConfigurata()) {
+                if (isConfigurata()) {
                     setState(PlayState.getInstance());
                     kenken.risolvi();
                     System.out.println(kenken.getNrSol());
@@ -432,7 +414,7 @@ public class GrigliaGUI extends Subject {
     }
 
     private void printCellaImpostata() {
-        for(int i=0; i<n;i++) {
+        for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 System.out.print(cellaImpostata[i][j] + " ");
             }
