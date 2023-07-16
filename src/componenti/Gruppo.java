@@ -5,7 +5,6 @@ import java.util.LinkedList;
 
 public class Gruppo implements Serializable {
 
-    //TODO faccio un builder nel caso si oglia implementare il gruppo in modo diverso
     private LinkedList<Coordinate> listaCelle;
     private int vincolo;
     private String operazione;

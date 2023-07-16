@@ -27,6 +27,8 @@ class Finestra extends JFrame {
     private Salvataggio salvataggio;
     private int indiceSoluzioneAttuale;
 
+    private int checkPressCount;
+
     private final int BOLD = 3;
     private final int DEFAULT = 4;
 
@@ -71,6 +73,7 @@ class Finestra extends JFrame {
             if (a.getSource() == plsStart) {
                 int choice = 0;
                 indiceSoluzioneAttuale=0;
+                checkPressCount=0;
                 if (!grigliaGUI.haSoluzione())
                     JOptionPane.showMessageDialog(null,
                             "La configurazione selezionata non presenta soluzioni!");
@@ -142,6 +145,20 @@ class Finestra extends JFrame {
                 }
             }
 
+            if(a.getSource() == plsCheck){
+                checkPressCount++;
+                if (checkPressCount % 2 == 1) {
+                    plsCheck.setText("CHECK ON!");
+                    grigliaGUI.setControlloAttivo(true);
+                    grigliaGUI.verificaSoluzione();
+                } else {
+                    plsCheck.setText("CHECK OFF");
+                    grigliaGUI.setControlloAttivo(false);
+                    grigliaGUI.ripristinaSfondo();
+
+                }
+            }
+
         }
     }
 
@@ -154,12 +171,12 @@ class Finestra extends JFrame {
         AscoltatoreEventi actListener = new AscoltatoreEventi();
 
         //TODO chiedo all'utente il tipo di salvataggio
+        //TODO chiedo all'utente quante soluzioni vuole
         salvataggio = new SalvataggioConfigurazione();
         this.n = n;
 
         grigliaGUI = new GrigliaGUI(n);
         pannelloGriglia = grigliaGUI.getPannelloGriglia();
-        //TODO fixare visibilità package e protected
         costruisciPannelloPulsanti(actListener);
         costruisciMenu(actListener);
 
@@ -189,44 +206,9 @@ class Finestra extends JFrame {
         plsNext.addActionListener(actListener);
         plsNext.setEnabled(false);
 
-        plsCheck = new JButton("CHECK");
+        plsCheck = new JButton("CHECK OFF");
         plsCheck.setFont(new Font("Franklin Gothic Medium Cond", Font.BOLD, 14));
-        plsCheck.addMouseListener(new MouseAdapter() {
-            private boolean isButtonPressed = false;
-            private boolean isActionRunning = false;
-            private int delay = 100; // Millisecondi di ritardo tra le azioni ripetute
-            private Timer timer;
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                isButtonPressed = true;
-                startAction();
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                isButtonPressed = false;
-                stopAction();
-            }
-
-            private void startAction() {
-                if (!isActionRunning) {
-                    isActionRunning = true;
-                    timer = new Timer(delay, event -> {
-                        grigliaGUI.evidenziaSoluzioniScorrette();
-                    });
-                    timer.start();
-                }
-            }
-
-            private void stopAction() {
-                if (isActionRunning) {
-                    isActionRunning = false;
-                    grigliaGUI.redraw();
-                    timer.stop();
-                }
-            }
-        });
+        plsCheck.addActionListener(actListener);
         plsCheck.setEnabled(true);
 
         pannelloPulsanti.setLayout(new GridLayout(4, 1, 10, 10));

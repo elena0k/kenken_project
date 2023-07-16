@@ -176,7 +176,7 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
         return risultato == gruppo.getVincolo();
     }
 
-    private int ordina(int op1, int op2, String operatore) {
+    public static int ordina(int op1, int op2, String operatore) {
         int ret;
         if (op1 < op2) {
             int tmp = op1;
