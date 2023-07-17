@@ -6,6 +6,7 @@ import com.project.kenken.observer.StartObserver;
 import com.project.kenken.state.State;
 import com.project.kenken.strategySalvataggio.Salvataggio;
 import com.project.kenken.strategySalvataggio.SalvataggioConfigurazione;
+import com.project.kenken.strategySalvataggio.SalvataggioJSon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,7 +32,7 @@ class Finestra extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         AscoltatoreEventi actListener = new AscoltatoreEventi();
         //TODO chiedo all'utente il tipo di salvataggio
-        salvataggio = new SalvataggioConfigurazione();
+        salvataggio = new SalvataggioJSon();
         this.n = n;
         grigliaGUI = new GrigliaGUI(n);
         pannelloGriglia = grigliaGUI.getPannelloGriglia();

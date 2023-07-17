@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.io.*;
 import java.util.List;
 
+
+
 public class SalvataggioConfigurazione implements Salvataggio {
 
     private File fileDiSalvataggio;
