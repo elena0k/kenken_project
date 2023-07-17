@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -75,10 +76,40 @@ public class GrigliaGUI extends Subject {
                 pannelloGriglia.add(grigliaCelle[i][j]);
             }
         }
-        //setState(ConfigState.getInstance());
-        //com.project.kenken.state.intercettaClick(this);
-
     }
+
+    public GrigliaGUI(KenkenGrid kenken, int[][] matriceScelte) {
+
+        actListener = new AscoltatoreEventi();
+        this.n = kenken.getDim();
+        if(maxNumSol==0)
+            maxNumSol = richiestaNumSoluzioni();
+        this.kenken = new KenkenGrid(kenken);
+        grigliaCelle = new Cella[n][n];
+        this.matriceScelte = new int[n][n];
+        for(int i=0; i<n;i++)
+            this.matriceScelte[i]= Arrays.copyOf(matriceScelte[i],n);
+        terminaConfigurazione();
+        pannelloGriglia = new JPanel();
+        pannelloGriglia.setLayout(new GridLayout(n, n));
+        pannelloGriglia.setSize(450, 450);
+        careTaker = new GroupsHistory();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                grigliaCelle[i][j] = new Cella();
+                grigliaCelle[i][j].setN(n);
+                grigliaCelle[i][j].setFont(n);
+                grigliaCelle[i][j].mySetBorder(border);
+                gestisciModificheCella(grigliaCelle[i][j], i, j);
+                pannelloGriglia.add(grigliaCelle[i][j]);
+            }
+        }
+        redraw();
+        setState(PlayState.getInstance());
+    }
+
+
 
     private int richiestaNumSoluzioni() {
         int ret = 0;
@@ -181,21 +212,24 @@ public class GrigliaGUI extends Subject {
     }
 
 
-    //TODO debuggare evidenziazione vincoli config3x3medium
-    void verificaSoluzione() {
-        rispettaVincoli();
+    List<Coordinate> verificaSoluzione() {
+        List<Coordinate> celle_scorrette= new LinkedList<>();
+        rispettaVincoli(celle_scorrette);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 if (matriceScelte[i][j] != 0) {
                     if (!verificaColonna(matriceScelte[i][j], j, i) ||
-                            !verificaRiga(matriceScelte[i][j], i, j))
+                            !verificaRiga(matriceScelte[i][j], i, j)) {
                         grigliaCelle[i][j].mySetBackground(Color.RED);
+                        celle_scorrette.add(new Coordinate(i,j));
+                    }
                 }
             }
         }
+        return celle_scorrette;
     }
 
-    private void rispettaVincoli() {
+    private void rispettaVincoli(List<Coordinate> celle_scorrette) {
         for (Gruppo g : kenken.getGroups()) {
             boolean gruppoIncompleto = false;
             for (Coordinate c : g.getListaCelle())
@@ -204,14 +238,17 @@ public class GrigliaGUI extends Subject {
                     break;
                 }
             if (!gruppoIncompleto && !verificaGruppo(g)) {
-                segnalaGruppo(g);
+                segnalaGruppo(g,celle_scorrette);
             }
         }
     }
 
-    private void segnalaGruppo(Gruppo g) {
-        for (Coordinate c : g.getListaCelle())
+    private void segnalaGruppo(Gruppo g,List<Coordinate> celle_scorrette) {
+        for (Coordinate c : g.getListaCelle()){
+            celle_scorrette.add(new Coordinate(c.getRiga(),c.getColonna()));
             grigliaCelle[c.getRiga()][c.getColonna()].mySetBackground(Color.RED);
+        }
+
     }
 
     private boolean verificaGruppo(Gruppo gruppo) {
@@ -345,6 +382,12 @@ public class GrigliaGUI extends Subject {
 
     public void resetConfigurazione() {
         cellaImpostata = new boolean[n][n];
+    }
+
+    public void terminaConfigurazione(){
+        for(int i=0; i<n; i++)
+            for(int j=0; j<n;j++)
+                cellaImpostata[i][j]=true;
     }
 
     JPanel getPannelloGriglia() {

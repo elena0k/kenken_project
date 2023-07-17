@@ -15,7 +15,6 @@ public class Cella extends JPanel {
 
     private JTextField text = new JTextField();
     private JTextField vincolo;
-    private Coordinate posizione;
     private PlainDocument doc;
     private int n;
 

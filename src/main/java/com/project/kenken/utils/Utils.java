@@ -3,6 +3,7 @@ package com.project.kenken.utils;
 import com.project.kenken.componenti.Coordinate;
 import com.project.kenken.componenti.Gruppo;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,9 +46,34 @@ public  class Utils {
         return gruppi;
     }
 
+    public static int[][] copiaProfondaMatriceInt(int[][] other) {
+        int[][] ret = new int[other.length][other.length];
+        for (int i = 0; i < other.length; i++) {
+            ret[i] = Arrays.copyOf(other[i], other.length);
+        }
+        return ret;
+    }
+
+    private static void printMatrice(int[][] mat) {
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat.length; j++) {
+                System.out.print(mat[i][j] + " ");
+            }
+            System.out.println("\n");
+        }
+    }
+
     public static void main(String[] args){
 
         System.out.println(templateGroups());
+        int[][] other={{3,1,2},{2,3,1},{1,2,3}};
+        int[][] copia= copiaProfondaMatriceInt(other);
+        copia[0]=new int[3];
+        System.out.println("copia");
+        printMatrice(copia);
+        System.out.println("originale");
+        printMatrice(other);
+
     }
 
 

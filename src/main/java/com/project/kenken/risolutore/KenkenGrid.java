@@ -7,6 +7,7 @@ import com.project.kenken.memento.Originator;
 import com.project.kenken.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,6 +36,23 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
         listaSoluzioni = new ArrayList<>();
         listaGruppi = new LinkedList<>();
     }
+
+    //TODO costruttore per copia
+
+    public KenkenGrid(KenkenGrid other){
+        this.dim= other.dim;
+        this.nrSol=other.nrSol;
+        this.griglia=Utils.copiaProfondaMatriceInt(other.griglia);
+        for(int i=0; i<nrSol;i++){
+            this.listaSoluzioni.add(Utils.copiaProfondaMatriceInt(other.listaSoluzioni.get(i)));
+        }
+        for(int i=0;i<listaGruppi.size();i++){
+            this.listaGruppi.add(new Gruppo(other.listaGruppi.get(i)));
+        }
+
+    }
+
+    public int getDim(){return this.dim;}
 
     public int getNrSol() {
         return nrSol;
