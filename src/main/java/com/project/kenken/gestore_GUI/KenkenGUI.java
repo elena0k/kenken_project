@@ -3,6 +3,7 @@ package com.project.kenken.gestore_GUI;
 import com.project.kenken.observer.CheckObserver;
 import com.project.kenken.observer.NextPrevObserver;
 import com.project.kenken.observer.StartObserver;
+import com.project.kenken.state.State;
 import com.project.kenken.strategySalvataggio.Salvataggio;
 import com.project.kenken.strategySalvataggio.SalvataggioConfigurazione;
 
@@ -105,8 +106,13 @@ class Finestra extends JFrame {
                         JOptionPane.showMessageDialog(pannelloGriglia, "Inserire un intero!");
                     }
                 }
-                grigliaGUI.setMaxSol(nrSol);
-                //TODO ricreare grigliaGUI con i parametri corretti
+                State statoCur=grigliaGUI.getState();
+                //if(!(statoCur instanceof ShowSolutionsState))
+                grigliaGUI = new GrigliaGUI(grigliaGUI.getKenken(),grigliaGUI.getMatriceScelte(), nrSol);
+                pannelloGriglia = grigliaGUI.getPannelloGriglia();
+                impostaObserver();
+                grigliaGUI.setState(statoCur);
+
             }
 
             if (a.getSource() == jmiHelp)
@@ -270,10 +276,6 @@ class Finestra extends JFrame {
         menuSize.add(celle6);
         celle6.addActionListener(ascoltatore);
 
-        max_sol = new JMenuItem("max solutions");
-        menuSize.add(max_sol);
-        max_sol.addActionListener(ascoltatore);
-
         jmbBarra.add(menuSize);
 
         JMenu menuSettings = new JMenu("Settings");
@@ -289,6 +291,19 @@ class Finestra extends JFrame {
 
         jmbBarra.add(menuAbout);
 
+    }
+
+
+
+    public void reimpostaFinestra(int nrSol){
+        remove(pannelloGriglia);
+        State statoCur=grigliaGUI.getState();
+        grigliaGUI = new GrigliaGUI(grigliaGUI.getKenken(),grigliaGUI.getMatriceScelte(), nrSol);
+        pannelloGriglia = grigliaGUI.getPannelloGriglia();
+        add(pannelloGriglia, BorderLayout.CENTER);
+        impostaObserver();
+        grigliaGUI.setState(statoCur);
+        pannelloGriglia.updateUI();
     }
 
 

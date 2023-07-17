@@ -9,6 +9,7 @@ import com.project.kenken.observer.Subject;
 import com.project.kenken.risolutore.GroupsHistory;
 import com.project.kenken.risolutore.KenkenGrid;
 import com.project.kenken.state.State;
+import com.project.kenken.utils.Utils;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -46,7 +47,7 @@ public class GrigliaGUI extends Subject {
     private GroupsHistory careTaker;
     private AscoltatoreEventi actListener;
     private boolean hoModificheNonSalvate = false;
-    private int[][] matriceScelte;
+    private int[][] matriceScelte,matriceTmp;
     private MatteBorder border = new MatteBorder(1, 1, 1, 1, Color.black);
 
 
@@ -78,13 +79,12 @@ public class GrigliaGUI extends Subject {
         }
     }
 
-    public GrigliaGUI(KenkenGrid kenken, int[][] matriceScelte) {
+    public GrigliaGUI(KenkenGrid kenken, int[][] matriceScelte,int maxSol) {
 
         actListener = new AscoltatoreEventi();
         this.n = kenken.getDim();
-        if(maxNumSol==0)
-            maxNumSol = richiestaNumSoluzioni();
-        this.kenken = new KenkenGrid(kenken);
+        maxNumSol=maxSol;
+        this.kenken = new KenkenGrid(kenken.getGroups(),kenken.getDim(),maxSol );
         grigliaCelle = new Cella[n][n];
         this.matriceScelte = new int[n][n];
         for(int i=0; i<n;i++)
@@ -106,7 +106,6 @@ public class GrigliaGUI extends Subject {
             }
         }
         redraw();
-        setState(PlayState.getInstance());
     }
 
 
@@ -385,6 +384,7 @@ public class GrigliaGUI extends Subject {
     }
 
     public void terminaConfigurazione(){
+        resetConfigurazione();
         for(int i=0; i<n; i++)
             for(int j=0; j<n;j++)
                 cellaImpostata[i][j]=true;
@@ -425,7 +425,7 @@ public class GrigliaGUI extends Subject {
         showSol.setEnabled(false);
         popup.add(showSol);
 
-        resetConfig = new JMenuItem("reset config");
+        resetConfig = new JMenuItem("set config");
         resetConfig.addActionListener(actListener);
         resetConfig.setEnabled(false);
         popup.add(resetConfig);
@@ -434,13 +434,15 @@ public class GrigliaGUI extends Subject {
     }
 
     void costruisciMenuShow() {
+        popup = new JPopupMenu();
 
-        popup.remove(showSol);
-        popup.remove(clear);
-
-        resetGame = new JMenuItem("reset game");
+        resetGame = new JMenuItem("back to game");
         resetGame.addActionListener(actListener);
         popup.add(resetGame);
+
+        resetConfig = new JMenuItem("set config");
+        resetConfig.addActionListener(actListener);
+        popup.add(resetConfig);
 
         pannelloGriglia.setComponentPopupMenu(popup);
     }
@@ -572,6 +574,21 @@ public class GrigliaGUI extends Subject {
         pannelloGriglia.repaint();
     }
 
+    public void salvaInLocale(){
+        matriceTmp= Utils.copiaProfondaMatriceInt(matriceScelte);
+    }
+
+    public void ripristinaGioco(){
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                grigliaCelle[i][j].mySetText(String.valueOf(matriceTmp[i][j]));
+                grigliaCelle[i][j].repaint();
+            }
+        }
+        pannelloGriglia.repaint();
+    }
+
+
 
     class AscoltatoreEventi implements ActionListener {
 
@@ -607,9 +624,11 @@ public class GrigliaGUI extends Subject {
             if (a.getSource() == resetGame) {
                 setState(PlayState.getInstance());
                 redraw();
+                ripristinaGioco();
             }
 
             if (a.getSource() == showSol) {
+                salvaInLocale();
                 setState((ShowSolutionsState.getInstance()));
                 mostraSoluzione(0);
             }

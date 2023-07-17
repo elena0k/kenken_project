@@ -92,7 +92,7 @@ public class Cella extends JPanel {
             vincolo.setText("" + num + op);
         else
             vincolo.setText(num + "");
-        vincolo.setEnabled(false);
+        vincolo.setEditable(false);
         add(vincolo, BorderLayout.NORTH);
         repaint();
     }
@@ -136,7 +136,7 @@ public class Cella extends JPanel {
 
 
     public void setEnabled(boolean bool) {
-        text.setEnabled(bool);
+        text.setEditable(bool);
     }
 
     public void mySetBorder(Border border) {

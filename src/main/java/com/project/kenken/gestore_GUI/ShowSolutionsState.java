@@ -19,6 +19,7 @@ public class ShowSolutionsState implements State {
     @Override
     public void intercettaClick(GrigliaGUI griglia) {
 
+        griglia.removeOldMenu();
         griglia.costruisciMenuShow();
         griglia.abilitaTextField(false);
     }
