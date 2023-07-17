@@ -129,8 +129,6 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
         return grigliaCopia;
     }
 
-
-    //TODO rivedere numero soluzioni
     @Override
     protected void scriviSoluzione(int nr_sol) {
         for (int i = 0; i < dim; i++)

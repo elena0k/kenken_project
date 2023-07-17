@@ -69,7 +69,6 @@ public class SalvataggioConfigurazione implements Salvataggio {
 
     @Override
     public GrigliaGUI apri() {
-        //TODO risolvere kenken anche quando apro da file
         GrigliaGUI grigliaGUI = null;
         JFileChooser jfc = new JFileChooser();
         if (jfc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
@@ -89,7 +88,7 @@ public class SalvataggioConfigurazione implements Salvataggio {
                     int n= (int) ois.readObject();
                     List<Gruppo> listaGruppi = (List<Gruppo>) ois.readObject();
                     ois.close();
-                    grigliaGUI = new GrigliaGUI(n); //TODO dare dimensione corretta
+                    grigliaGUI = new GrigliaGUI(n);
                     for (int i = 0; i < listaGruppi.size(); i++)
                         grigliaGUI.getKenken().addGroup(listaGruppi.get(i));
                     grigliaGUI.redraw();

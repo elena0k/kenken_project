@@ -117,7 +117,7 @@ class Finestra extends JFrame {
                                 "-Usa i pulsanti NEXT e PREVIOUS per navigare tra le soluzioni.");
 
             if (a.getSource() == jmiApri) {
-                //TODO rivedere
+                //TODO rivedere bug cella doppia per ripristino da file
                 if (pannelloGriglia != null) {
                     grigliaGUI.removeCelle();
                     remove(pannelloGriglia);
@@ -149,7 +149,6 @@ class Finestra extends JFrame {
                 }
             }
 
-            //TODO ripristinare checkOff in caso di reset config
             if(a.getSource() == plsCheck){
                 checkPressCount++;
                 if (checkPressCount % 2 == 1) {
@@ -176,7 +175,6 @@ class Finestra extends JFrame {
         AscoltatoreEventi actListener = new AscoltatoreEventi();
 
         //TODO chiedo all'utente il tipo di salvataggio
-        //TODO chiedo all'utente quante soluzioni vuole
         salvataggio = new SalvataggioConfigurazione();
         this.n = n;
 
