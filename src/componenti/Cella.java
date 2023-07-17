@@ -34,24 +34,22 @@ public class Cella extends JPanel {
         doc.setDocumentFilter(new DocumentFilter() {
             public void insertString(FilterBypass fb, int offset, String text, AttributeSet attrs) throws BadLocationException {
 
-                if(text.matches("\\d")) {
+                if (text.matches("\\d")) {
                     int num = Integer.parseInt(text);
                     if (num > 0 && num <= n)
                         super.insertString(fb, offset, text, attrs);
-                }
-                else if(text.equals(""))
+                } else if (text.equals(""))
                     super.insertString(fb, offset, text, attrs);
             }
 
             @Override
             public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
 
-                if(text.matches("\\d")) {
+                if (text.matches("\\d")) {
                     int num = Integer.parseInt(text);
                     if (num > 0 && num <= n)
                         super.replace(fb, offset, length, text, attrs);
-                }
-                else if(text.equals(""))
+                } else if (text.equals(""))
                     super.replace(fb, offset, length, text, attrs);
             }
         });
@@ -132,7 +130,10 @@ public class Cella extends JPanel {
     public String getText() {
         return text.getText();
     }
-    public void cleanText(){text.setText("");}
+
+    public void cleanText() {
+        text.setText("");
+    }
 
 
     public void setEnabled(boolean bool) {
@@ -143,14 +144,15 @@ public class Cella extends JPanel {
         setBorder(border);
     }
 
-    public void mySetText(String s){text.setText(s);}
+    public void mySetText(String s) {
+        text.setText(s);
+    }
 
     public void setMouseAdapter(MouseAdapter mouseAdapter) {
         text.addMouseListener(mouseAdapter);
     }
 
-    public void setDocumentListener(DocumentListener doc)
-    {
+    public void setDocumentListener(DocumentListener doc) {
         text.getDocument().addDocumentListener(doc);
     }
 }

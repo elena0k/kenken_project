@@ -293,7 +293,7 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
 
          */
         Gruppo g1 = new Gruppo(18, "+", l1);
-        KenkenGrid kenken = new KenkenGrid(3,8);
+        KenkenGrid kenken = new KenkenGrid(3, 8);
         kenken.addGroup(g1);
         //kenken.addGroup(g2);
         //kenken.addGroup(g3);

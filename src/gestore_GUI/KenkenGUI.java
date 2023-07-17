@@ -10,8 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 class Finestra extends JFrame {
 
@@ -19,9 +17,9 @@ class Finestra extends JFrame {
     private GrigliaGUI grigliaGUI;
 
     private JMenuItem jmiApri, jmiSalva, jmiSalvaConNome,
-            jmiHelp, jmiEsci, celle3, celle4, celle5, celle6;
+            jmiHelp, max_sol, celle3, celle4, celle5, celle6;
     private JPanel pannelloGriglia, pannelloPulsanti;
-    private JButton plsCheck,plsPrev, plsNext,plsStart;
+    private JButton plsCheck, plsPrev, plsNext, plsStart;
     private JPopupMenu popup;
     private boolean hoModificheNonSalvate = false;
     private Salvataggio salvataggio;
@@ -72,8 +70,8 @@ class Finestra extends JFrame {
             }
             if (a.getSource() == plsStart) {
                 int choice = 0;
-                indiceSoluzioneAttuale=0;
-                checkPressCount=0;
+                indiceSoluzioneAttuale = 0;
+                checkPressCount = 0;
                 if (!grigliaGUI.haSoluzione())
                     JOptionPane.showMessageDialog(null,
                             "La configurazione selezionata non presenta soluzioni!");
@@ -89,7 +87,11 @@ class Finestra extends JFrame {
                 grigliaGUI.setControlloAttivo(false);
                 grigliaGUI.abilitaTextField(true);
                 grigliaGUI.abilitaPopup();
-                /*
+
+                //TODO sistemare la richiesta del numero di soluzioni in modo meno fastidioso
+            }
+
+            if(a.getSource() == max_sol){
                 int nrSol=0;
                 for (; ; ) {
 
@@ -104,9 +106,9 @@ class Finestra extends JFrame {
                     }
                 }
                 grigliaGUI.setMaxSol(nrSol);
-
-                 */
+                //TODO ricreare grigliaGUI con i parametri corretti
             }
+
             if (a.getSource() == jmiHelp)
                 JOptionPane.showMessageDialog(null,
                         "-Puoi personalizzare la difficoltà dalla barra SIZE. \n" +
@@ -130,8 +132,16 @@ class Finestra extends JFrame {
                 pannelloGriglia.updateUI();
             }
 
-            if(a.getSource() == plsNext){
-                if(indiceSoluzioneAttuale == grigliaGUI.getNumSol()-1)
+            if(a.getSource() == jmiSalva){
+                salvataggio.salva(grigliaGUI);
+            }
+
+            if(a.getSource() == jmiSalvaConNome){
+                salvataggio.salvaConNome(grigliaGUI);
+            }
+
+            if (a.getSource() == plsNext) {
+                if (indiceSoluzioneAttuale == grigliaGUI.getNumSol() - 1)
                     JOptionPane.showMessageDialog(null, "Sei arrivato all'ultima soluzione");
                 else {
                     grigliaGUI.mostraSoluzione(indiceSoluzioneAttuale);
@@ -149,7 +159,7 @@ class Finestra extends JFrame {
                 }
             }
 
-            if(a.getSource() == plsCheck){
+            if (a.getSource() == plsCheck) {
                 checkPressCount++;
                 if (checkPressCount % 2 == 1) {
                     plsCheck.setText("CHECK ON!");
@@ -229,21 +239,17 @@ class Finestra extends JFrame {
 
         JMenuBar jmbBarra = new JMenuBar();
         this.setJMenuBar(jmbBarra);
-        jmiApri = new JMenuItem("Apri");
+        jmiApri = new JMenuItem("Open");
         fileMenu.add(jmiApri);
         jmiApri.addActionListener(ascoltatore);
 
-        jmiSalva = new JMenuItem("Salva");
+        jmiSalva = new JMenuItem("Save");
         fileMenu.add(jmiSalva);
         jmiSalva.addActionListener(ascoltatore);
 
-        jmiSalvaConNome = new JMenuItem("Salva con nome");
+        jmiSalvaConNome = new JMenuItem("Save as");
         fileMenu.add(jmiSalvaConNome);
         jmiSalvaConNome.addActionListener(ascoltatore);
-
-        jmiEsci = new JMenuItem("Esci");
-        fileMenu.add(jmiEsci);
-        jmiEsci.addActionListener(ascoltatore);
 
         jmbBarra.add(fileMenu);
 
@@ -264,7 +270,17 @@ class Finestra extends JFrame {
         menuSize.add(celle6);
         celle6.addActionListener(ascoltatore);
 
+        max_sol = new JMenuItem("max solutions");
+        menuSize.add(max_sol);
+        max_sol.addActionListener(ascoltatore);
+
         jmbBarra.add(menuSize);
+
+        JMenu menuSettings = new JMenu("Settings");
+        max_sol = new JMenuItem("max solutions");
+        menuSettings.add(max_sol);
+        max_sol.addActionListener(ascoltatore);
+        jmbBarra.add(menuSettings);
 
         JMenu menuAbout = new JMenu("About");
         jmiHelp = new JMenuItem("Help");

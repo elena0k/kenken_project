@@ -2,8 +2,7 @@ package eccezioni;
 
 public class VincoloNegativoException extends Exception {
 
-    public VincoloNegativoException()
-    {
+    public VincoloNegativoException() {
         super();
     }
 }

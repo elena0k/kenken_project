@@ -40,7 +40,7 @@ public class GrigliaGUI extends Subject {
     private boolean gruppoInserito, controlloAttivo;
     private ArrayList<int[][]> listaSoluzioni;
     //private int indiceSoluzioneCur=0;
-    private int maxNumSol;
+    private static int maxNumSol=0;
     private State state;
     private GroupsHistory careTaker;
     private AscoltatoreEventi actListener;
@@ -53,10 +53,11 @@ public class GrigliaGUI extends Subject {
 
         actListener = new AscoltatoreEventi();
         this.n = n;
-        maxNumSol=richiestaNumSoluzioni();
-        kenken = new KenkenGrid(n,maxNumSol);
+        if(maxNumSol==0)
+            maxNumSol = richiestaNumSoluzioni();
+        kenken = new KenkenGrid(n, maxNumSol);
         grigliaCelle = new Cella[n][n];
-        matriceScelte= new int[n][n];
+        matriceScelte = new int[n][n];
         resetConfigurazione();
         pannelloGriglia = new JPanel();
         pannelloGriglia.setLayout(new GridLayout(n, n));
@@ -70,7 +71,7 @@ public class GrigliaGUI extends Subject {
                 grigliaCelle[i][j].setN(n);
                 grigliaCelle[i][j].setFont(n);
                 grigliaCelle[i][j].mySetBorder(border);
-                gestisciModificheCella(grigliaCelle[i][j],i,j);
+                gestisciModificheCella(grigliaCelle[i][j], i, j);
                 pannelloGriglia.add(grigliaCelle[i][j]);
             }
         }
@@ -80,7 +81,7 @@ public class GrigliaGUI extends Subject {
     }
 
     private int richiestaNumSoluzioni() {
-        int ret=0;
+        int ret = 0;
         for (; ; ) {
             String input = JOptionPane.showInputDialog("Fornire il numero massimo di soluzioni da visualizzare!");
             try {
@@ -91,22 +92,32 @@ public class GrigliaGUI extends Subject {
                 JOptionPane.showMessageDialog(pannelloGriglia, "Inserire un intero!");
             }
         }
-            return ret;
+        return ret;
     }
 
     //TODO proteggere il metodo o passare copia
-    public KenkenGrid getKenken() {return kenken;}
+    public KenkenGrid getKenken() {
+        return kenken;
+    }
 
     //TODO proteggere metodo
-    public int[][] getMatriceScelte(){return matriceScelte;}
+    public int[][] getMatriceScelte() {
+        return matriceScelte;
+    }
 
-    public int getNumSol(){return kenken.getNrSol();}
+    public int getNumSol() {
+        return kenken.getNrSol();
+    }
 
     //public int getIndiceSoluzioneCur(){return indiceSoluzioneCur;}
 
-    public void setMaxSol(int nrSol){this.maxNumSol=nrSol;}
+    public void setMaxSol(int nrSol) {
+        this.maxNumSol = nrSol;
+    }
 
-    public void setControlloAttivo(boolean attivo){this.controlloAttivo=attivo;}
+    public void setControlloAttivo(boolean attivo) {
+        this.controlloAttivo = attivo;
+    }
 
     public void setState(State state) {
         this.state = state;
@@ -118,10 +129,10 @@ public class GrigliaGUI extends Subject {
         return this.state;
     }
 
-    void mostraSoluzione(int index){
-        int[][] soluzioneCurr= listaSoluzioni.get(index);
-        for(int i=0; i<n; i++) {
-            for(int j=0; j<n; j++){
+    void mostraSoluzione(int index) {
+        int[][] soluzioneCurr = listaSoluzioni.get(index);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
                 grigliaCelle[i][j].mySetText(String.valueOf(soluzioneCurr[i][j]));
                 grigliaCelle[i][j].repaint();
             }
@@ -132,82 +143,84 @@ public class GrigliaGUI extends Subject {
     void gestisciModificheCella(Cella cella, int i, int j) {
         cella.setDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
-                aggiornaMatriceScelte(cella,i,j);
-                if(controlloAttivo)
+                aggiornaMatriceScelte(cella, i, j);
+                if (controlloAttivo)
                     verificaSoluzione();
             }
+
             public void removeUpdate(DocumentEvent e) {
-                aggiornaMatriceScelte(cella,i,j);
+                aggiornaMatriceScelte(cella, i, j);
                 ripristinaSfondo();
-                if(controlloAttivo)
+                if (controlloAttivo)
                     verificaSoluzione();
 
             }
+
             public void insertUpdate(DocumentEvent e) {
-                aggiornaMatriceScelte(cella,i,j);
+                aggiornaMatriceScelte(cella, i, j);
                 printMatriceScelte();
-                if(controlloAttivo)
+                if (controlloAttivo)
                     verificaSoluzione();
             }
         });
     }
 
-    void ripristinaSfondo(){
-        for(int i=0; i<n; i++)
-            for(int j=0; j<n; j++)
+    void ripristinaSfondo() {
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
                 grigliaCelle[i][j].mySetBackground(Color.WHITE);
     }
 
     private void aggiornaMatriceScelte(Cella cella, int i, int j) {
         int val;
         hoModificheNonSalvate = true;
-        if(cella.getText().equals(""))
-            val=0;
-        else val=Integer.parseInt(cella.getText());
-        matriceScelte[i][j]=val;
+        if (cella.getText().equals(""))
+            val = 0;
+        else val = Integer.parseInt(cella.getText());
+        matriceScelte[i][j] = val;
     }
 
 
     //TODO debuggare evidenziazione vincoli config3x3medium
     void verificaSoluzione() {
         rispettaVincoli();
-        for(int i=0; i<n; i++) {
-            for(int j=0; j<n; j++){
-                if(matriceScelte[i][j]!=0) {
-                    if(! verificaColonna(matriceScelte[i][j], j, i) ||
-                            !verificaRiga(matriceScelte[i][j],i,j)  )
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matriceScelte[i][j] != 0) {
+                    if (!verificaColonna(matriceScelte[i][j], j, i) ||
+                            !verificaRiga(matriceScelte[i][j], i, j))
                         grigliaCelle[i][j].mySetBackground(Color.RED);
                 }
             }
         }
     }
 
-    private void rispettaVincoli(){
-        for(Gruppo g: kenken.getGroups()){
-            boolean gruppoIncompleto=false;
-            for(Coordinate c: g.getListaCelle())
-                if(matriceScelte[c.getRiga()][c.getColonna()]==0) {
+    private void rispettaVincoli() {
+        for (Gruppo g : kenken.getGroups()) {
+            boolean gruppoIncompleto = false;
+            for (Coordinate c : g.getListaCelle())
+                if (matriceScelte[c.getRiga()][c.getColonna()] == 0) {
                     gruppoIncompleto = true; //gruppo incompleto
                     break;
                 }
-            if(!gruppoIncompleto && !verificaGruppo(g)) {
+            if (!gruppoIncompleto && !verificaGruppo(g)) {
                 segnalaGruppo(g);
             }
         }
     }
 
-    private void segnalaGruppo(Gruppo g){
-        for(Coordinate c: g.getListaCelle())
+    private void segnalaGruppo(Gruppo g) {
+        for (Coordinate c : g.getListaCelle())
             grigliaCelle[c.getRiga()][c.getColonna()].mySetBackground(Color.RED);
     }
 
-    private boolean verificaGruppo(Gruppo gruppo){
+    private boolean verificaGruppo(Gruppo gruppo) {
         LinkedList<Coordinate> celle = gruppo.getListaCelle();
-        Coordinate coord=gruppo.getListaCelle().get(0);
-        int risultato=matriceScelte[coord.getRiga()][coord.getColonna()];
-        for (int i=1; i<celle.size();i++) {
-            int riga=celle.get(i).getRiga();
-            int colonna=celle.get(i).getColonna();
+        Coordinate coord = gruppo.getListaCelle().get(0);
+        int risultato = matriceScelte[coord.getRiga()][coord.getColonna()];
+        for (int i = 1; i < celle.size(); i++) {
+            int riga = celle.get(i).getRiga();
+            int colonna = celle.get(i).getColonna();
             if ("+".equals(gruppo.getOperazione()))
                 risultato += matriceScelte[riga][colonna];
             if ("-".equals(gruppo.getOperazione()) || "%".equals(gruppo.getOperazione()))
@@ -215,17 +228,17 @@ public class GrigliaGUI extends Subject {
             if ("x".equals(gruppo.getOperazione()))
                 risultato *= matriceScelte[riga][colonna];
         }
-        return risultato==gruppo.getVincolo();
+        return risultato == gruppo.getVincolo();
     }
 
-    private boolean verificaColonna(int val, int j, int riga){
+    private boolean verificaColonna(int val, int j, int riga) {
         for (int i = 0; i < this.n; i++)
             if (i != riga && matriceScelte[i][j] == val)
                 return false;
         return true;
     }
 
-    private boolean verificaRiga(int val, int i, int colonna){
+    private boolean verificaRiga(int val, int i, int colonna) {
         for (int j = 0; j < this.n; j++)
             if (j != colonna && matriceScelte[i][j] == val)
                 return false;
@@ -233,8 +246,8 @@ public class GrigliaGUI extends Subject {
     }
 
     void removeCelle() {
-        for(int i=0; i<n; i++)
-            for(int j=0; j<n; j++)
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
                 pannelloGriglia.remove(grigliaCelle[i][j]);
     }
 
@@ -481,13 +494,13 @@ public class GrigliaGUI extends Subject {
             pannelloGriglia.remove(popup);
     }
 
-    void abilitaTextField(boolean bool){
+    void abilitaTextField(boolean bool) {
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++)
                 grigliaCelle[i][j].setEnabled(bool);
     }
 
-    void abilitaPopup(){
+    void abilitaPopup() {
         showSol.setEnabled(true);
         resetConfig.setEnabled(true);
     }
@@ -502,10 +515,9 @@ public class GrigliaGUI extends Subject {
         }
     }
 
-    void avviaSoluzione()
-    {
+    void avviaSoluzione() {
         kenken.risolvi();
-        listaSoluzioni=kenken.getListaSoluzioni();
+        listaSoluzioni = kenken.getListaSoluzioni();
     }
 
     private void pulisciGriglia() {

@@ -54,7 +54,7 @@ public class SalvataggioConfigurazione implements Salvataggio {
 
     private void scriviOggetto(GrigliaGUI grigliaGUI) throws IOException {
         if (fileDiSalvataggio != null) {
-            int[][] matriceTmp= new int[grigliaGUI.getN()][grigliaGUI.getN()];
+            int[][] matriceTmp = new int[grigliaGUI.getN()][grigliaGUI.getN()];
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileDiSalvataggio));
             oos.writeObject(grigliaGUI.getN());
             oos.writeObject(grigliaGUI.getKenken().getGroups());
@@ -85,7 +85,7 @@ public class SalvataggioConfigurazione implements Salvataggio {
                     e1.printStackTrace();
                 }
                 try {
-                    int n= (int) ois.readObject();
+                    int n = (int) ois.readObject();
                     List<Gruppo> listaGruppi = (List<Gruppo>) ois.readObject();
                     ois.close();
                     grigliaGUI = new GrigliaGUI(n);
