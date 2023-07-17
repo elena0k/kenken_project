@@ -4,6 +4,7 @@ import com.project.kenken.componenti.Coordinate;
 import com.project.kenken.componenti.Gruppo;
 import com.project.kenken.memento.Memento;
 import com.project.kenken.memento.Originator;
+import com.project.kenken.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -39,14 +40,20 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
         return nrSol;
     }
 
-    public ArrayList<int[][]> getListaSoluzioni() //TODO fare copia profonda
-    {
-        return new ArrayList<>(List.copyOf(listaSoluzioni));
+    public ArrayList<int[][]> getListaSoluzioni(){ //TODO fare copia profonda
+        return new ArrayList<>(listaSoluzioni);
+    }
+
+    public void setListaGruppi(List<Gruppo> gruppi){
+        for(int i=0; i<gruppi.size();i++){
+            this.listaGruppi.add(new Gruppo(gruppi.get(i)));
+        }
     }
 
     public void addGroup(Gruppo gruppo) {
-        this.listaGruppi.add(gruppo);
+        this.listaGruppi.add(new Gruppo(gruppo));
     }
+
 
     public void printGroups() {
         System.out.println("GRUPPI:  ");
@@ -138,21 +145,21 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
         this.nrSol = listaSoluzioni.size();
     }
 
-    private boolean verificaColonna(Integer j, Integer scelta) {
+    public boolean verificaColonna(Integer j, Integer scelta) {
         for (int i = 0; i < this.dim; i++)
             if (griglia[i][j] == scelta)
                 return false;
         return true;
     }
 
-    private boolean verificaRiga(Integer i, Integer scelta) {
+    public boolean verificaRiga(Integer i, Integer scelta) {
         for (int j = 0; j < this.dim; j++)
             if (griglia[i][j] == scelta)
                 return false;
         return true;
     }
 
-    private boolean verificaGruppo(int puntoDiScelta, Integer scelta) { //private
+    public boolean verificaGruppo(int puntoDiScelta, Integer scelta) { //private
         boolean ret = true;
         for (Gruppo gruppo : listaGruppi) {
             if (gruppo.contains(new Coordinate(puntoDiScelta / dim, puntoDiScelta % dim))) {
@@ -242,62 +249,12 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
 
     public static void main(String[] args) {
 
-        Coordinate c0 = new Coordinate(0, 0);
-        Coordinate c1 = new Coordinate(0, 1);
-        Coordinate c2 = new Coordinate(0, 2);
-        Coordinate c3 = new Coordinate(1, 0);
-        Coordinate c4 = new Coordinate(1, 1);
-        Coordinate c5 = new Coordinate(1, 2);
-        Coordinate c6 = new Coordinate(2, 0);
-        Coordinate c7 = new Coordinate(2, 1);
-        Coordinate c8 = new Coordinate(2, 2);
+        List<Gruppo> gruppi=Utils.templateGroups();
 
-        LinkedList<Coordinate> l1 = new LinkedList<>();
-
-        l1.add(c0);
-        l1.add(c1);
-        l1.add(c2);
-        l1.add(c5);
-        l1.add(c3);
-        l1.add(c4);
-        l1.add(c6);
-        l1.add(c7);
-        l1.add(c8);
-
-        /*
-        LinkedList<Coordinate> l2 = new LinkedList<>();
-        LinkedList<Coordinate> l3 = new LinkedList<>();
-        LinkedList<Coordinate> l4 = new LinkedList<>();
-        LinkedList<Coordinate> l5 = new LinkedList<>();
-        l1.add(c1);
-        l1.add(c0);
-        l2.add(c2);
-        l2.add(c5);
-        l3.add(c3);
-        l3.add(c4);
-        l3.add(c6);
-        l4.add(c7);
-        l4.add(c8);
-
-        Gruppo g1 = new Gruppo(18, "+", l1);
-        Gruppo g2 = new Gruppo(2, "%", l2);
-        Gruppo g3 = new Gruppo(6, "x", l3);
-        Gruppo g4 = new Gruppo(1, "-", l4);
-
-        LinkedList<Gruppo> gruppi = new LinkedList<>();
-        gruppi.add(g1);
-        gruppi.add(g2);
-        gruppi.add(g3);
-        gruppi.add(g4);
-
-
-         */
-        Gruppo g1 = new Gruppo(18, "+", l1);
         KenkenGrid kenken = new KenkenGrid(3, 8);
-        kenken.addGroup(g1);
-        //kenken.addGroup(g2);
-        //kenken.addGroup(g3);
-        //kenken.addGroup(g4);
+        kenken.setListaGruppi(gruppi);
+        System.out.println("Impostati"+kenken.getGroups());
+
         kenken.risolvi();
         System.out.println(kenken.getNrSol());
     }
