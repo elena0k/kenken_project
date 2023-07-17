@@ -15,7 +15,7 @@ public class Cella extends JPanel {
 
     private JTextField text = new JTextField();
     private JTextField vincolo;
-    private PlainDocument doc;
+    private final PlainDocument doc;
     private int n;
 
     public Cella() {
@@ -73,7 +73,7 @@ public class Cella extends JPanel {
                 String input = text.getText();
                 if (input.length() > 1 || (input.length() == 1 && !Character.isDigit(input.charAt(0)))) {
                     SwingUtilities.invokeLater(() -> {
-                        text.setText(input.substring(0, Math.min(input.length(), 1)));
+                        text.setText(input.substring(0, 1));
                     });
                 }
             }
@@ -89,9 +89,9 @@ public class Cella extends JPanel {
     public void setVincolo(int num, String op) {
         vincolo = new JTextField();
         if (op != null)
-            vincolo.setText("" + num + op);
+            vincolo.setText(num + op);
         else
-            vincolo.setText(num + "");
+            vincolo.setText(String.valueOf(num));
         vincolo.setEditable(false);
         add(vincolo, BorderLayout.NORTH);
         repaint();
@@ -107,14 +107,12 @@ public class Cella extends JPanel {
         return vincolo == null;
     }
 
-
     public void setFont(int n) {
         if (n == 6 || n == 5)
             text.setFont(new Font("Courier New", Font.BOLD, 20));
         else if (n == 3 || n == 4)
             text.setFont(new Font("Courier New", Font.BOLD, 35));
     }
-
 
     public JTextField getTextField() {
         return text;
@@ -134,9 +132,8 @@ public class Cella extends JPanel {
         text.setText("");
     }
 
-
     public void setEnabled(boolean bool) {
-        text.setEditable(bool);
+        text.setEnabled(bool);
     }
 
     public void mySetBorder(Border border) {

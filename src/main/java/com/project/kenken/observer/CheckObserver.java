@@ -16,7 +16,8 @@ public class CheckObserver implements Observer {
     }
 
     @Override
-    public void update() {
+    public void update(boolean running) {
+
         plsCheck.setEnabled(subject.getState() instanceof PlayState);
     }
 }

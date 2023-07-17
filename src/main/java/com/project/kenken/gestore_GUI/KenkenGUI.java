@@ -16,192 +16,29 @@ class Finestra extends JFrame {
 
     private int n;
     private GrigliaGUI grigliaGUI;
-
     private JMenuItem jmiApri, jmiSalva, jmiSalvaConNome,
             jmiHelp, max_sol, celle3, celle4, celle5, celle6;
     private JPanel pannelloGriglia, pannelloPulsanti;
     private JButton plsCheck, plsPrev, plsNext, plsStart;
-    private JPopupMenu popup;
-    private boolean hoModificheNonSalvate = false;
     private Salvataggio salvataggio;
     private int indiceSoluzioneAttuale;
-
     private int checkPressCount;
 
-    private final int BOLD = 3;
-    private final int DEFAULT = 4;
-
-
-    class AscoltatoreEventi implements ActionListener {
-        Finestra f;
-
-        public void actionPerformed(ActionEvent a) {
-
-            if (a.getSource() == celle3) {
-                resizeGriglia(3);
-                celle3.setEnabled(false);
-                celle4.setEnabled(true);
-                celle5.setEnabled(true);
-                celle6.setEnabled(true);
-                grigliaGUI.setState(ConfigState.getInstance());
-            }
-            if (a.getSource() == celle4) {
-                resizeGriglia(4);
-                celle3.setEnabled(true);
-                celle4.setEnabled(false);
-                celle5.setEnabled(true);
-                celle6.setEnabled(true);
-                grigliaGUI.setState(ConfigState.getInstance());
-            }
-            if (a.getSource() == celle5) {
-                resizeGriglia(5);
-                celle3.setEnabled(true);
-                celle4.setEnabled(true);
-                celle5.setEnabled(false);
-                celle6.setEnabled(true);
-                grigliaGUI.setState(ConfigState.getInstance());
-            }
-            if (a.getSource() == celle6) {
-                resizeGriglia(6);
-                celle3.setEnabled(true);
-                celle4.setEnabled(true);
-                celle5.setEnabled(true);
-                celle6.setEnabled(false);
-                grigliaGUI.setState(ConfigState.getInstance());
-            }
-            if (a.getSource() == plsStart) {
-                int choice = 0;
-                indiceSoluzioneAttuale = 0;
-                checkPressCount = 0;
-                if (!grigliaGUI.haSoluzione())
-                    JOptionPane.showMessageDialog(null,
-                            "La configurazione selezionata non presenta soluzioni!");
-                else
-                    choice = JOptionPane.showConfirmDialog(null,
-                            "Vuoi salvare la configurazione?");
-                if (choice == JOptionPane.YES_OPTION) {
-                    salvataggio = new SalvataggioConfigurazione();
-                    salvataggio.salvaConNome(grigliaGUI);
-                }
-                plsStart.setEnabled(false);
-                plsCheck.setText("CHECK OFF");
-                grigliaGUI.setControlloAttivo(false);
-                grigliaGUI.abilitaTextField(true);
-                grigliaGUI.abilitaPopup();
-
-                //TODO sistemare la richiesta del numero di soluzioni in modo meno fastidioso
-            }
-
-            if(a.getSource() == max_sol){
-                int nrSol=0;
-                for (; ; ) {
-
-                    String input = JOptionPane.showInputDialog
-                            (" Inserisci il massimo numero di soluzioni da calcolare! ");
-                    try {
-                        nrSol = Integer.parseInt(input);
-                        break;
-
-                    } catch (RuntimeException e) {
-                        JOptionPane.showMessageDialog(pannelloGriglia, "Inserire un intero!");
-                    }
-                }
-                State statoCur=grigliaGUI.getState();
-                //if(!(statoCur instanceof ShowSolutionsState))
-                grigliaGUI = new GrigliaGUI(grigliaGUI.getKenken(),grigliaGUI.getMatriceScelte(), nrSol);
-                pannelloGriglia = grigliaGUI.getPannelloGriglia();
-                impostaObserver();
-                grigliaGUI.setState(statoCur);
-
-            }
-
-            if (a.getSource() == jmiHelp)
-                JOptionPane.showMessageDialog(null,
-                        "-Puoi personalizzare la difficoltà dalla barra SIZE. \n" +
-                                "-Usa il pulsante CHECK per verificare che tuttu i numeri \n" +
-                                " inseriti nei blocchi rispettino i vincoli. \n" +
-                                "-I numeri all'interno di uno stesso blocco possono ripetersi \n" +
-                                " a patto che non si ripetano sulla riga o sulla colonna! \n" +
-                                "-Usa i pulsanti NEXT e PREVIOUS per navigare tra le soluzioni.");
-
-            if (a.getSource() == jmiApri) {
-                //TODO rivedere bug cella doppia per ripristino da file
-                if (pannelloGriglia != null) {
-                    grigliaGUI.removeCelle();
-                    remove(pannelloGriglia);
-                }
-                grigliaGUI = salvataggio.apri();
-                impostaObserver();
-                grigliaGUI.setState(PlayState.getInstance());
-                pannelloGriglia = grigliaGUI.getPannelloGriglia();
-                add(pannelloGriglia, BorderLayout.CENTER);
-                pannelloGriglia.updateUI();
-            }
-
-            if(a.getSource() == jmiSalva){
-                salvataggio.salva(grigliaGUI);
-            }
-
-            if(a.getSource() == jmiSalvaConNome){
-                salvataggio.salvaConNome(grigliaGUI);
-            }
-
-            if (a.getSource() == plsNext) {
-                if (indiceSoluzioneAttuale == grigliaGUI.getNumSol() - 1)
-                    JOptionPane.showMessageDialog(null, "Sei arrivato all'ultima soluzione");
-                else {
-                    grigliaGUI.mostraSoluzione(indiceSoluzioneAttuale);
-                    indiceSoluzioneAttuale++;
-                }
-            }
-
-            if (a.getSource() == plsPrev) {
-
-                if (indiceSoluzioneAttuale == 0)
-                    JOptionPane.showMessageDialog(null, "Sei arrivato alla prima soluzione");
-                else {
-                    grigliaGUI.mostraSoluzione(indiceSoluzioneAttuale);
-                    indiceSoluzioneAttuale--;
-                }
-            }
-
-            if (a.getSource() == plsCheck) {
-                checkPressCount++;
-                if (checkPressCount % 2 == 1) {
-                    plsCheck.setText("CHECK ON!");
-                    grigliaGUI.setControlloAttivo(true);
-                    grigliaGUI.verificaSoluzione();
-                } else {
-                    plsCheck.setText("CHECK OFF");
-                    grigliaGUI.setControlloAttivo(false);
-                    grigliaGUI.ripristinaSfondo();
-
-                }
-            }
-
-        }
-    }
 
 
     public Finestra(int n) {
         setTitle("KenkenGUI ");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
         AscoltatoreEventi actListener = new AscoltatoreEventi();
-
         //TODO chiedo all'utente il tipo di salvataggio
         salvataggio = new SalvataggioConfigurazione();
         this.n = n;
-
         grigliaGUI = new GrigliaGUI(n);
         pannelloGriglia = grigliaGUI.getPannelloGriglia();
         costruisciPannelloPulsanti(actListener);
         costruisciMenu(actListener);
-
         impostaObserver();
         grigliaGUI.setState(ConfigState.getInstance());
-
         add(pannelloGriglia, BorderLayout.CENTER);
         add(pannelloPulsanti, BorderLayout.EAST);
         setSize(480, 400);
@@ -293,8 +130,6 @@ class Finestra extends JFrame {
 
     }
 
-
-
     public void reimpostaFinestra(int nrSol){
         remove(pannelloGriglia);
         State statoCur=grigliaGUI.getState();
@@ -305,7 +140,6 @@ class Finestra extends JFrame {
         grigliaGUI.setState(statoCur);
         pannelloGriglia.updateUI();
     }
-
 
     public void resizeGriglia(int size) {
         remove(pannelloGriglia);
@@ -325,16 +159,165 @@ class Finestra extends JFrame {
     }
 
 
+    class AscoltatoreEventi implements ActionListener {
+
+        public void actionPerformed(ActionEvent a) {
+
+            if (a.getSource() == celle3) {
+                resizeGriglia(3);
+                celle3.setEnabled(false);
+                celle4.setEnabled(true);
+                celle5.setEnabled(true);
+                celle6.setEnabled(true);
+                grigliaGUI.setState(ConfigState.getInstance());
+            }
+            if (a.getSource() == celle4) {
+                resizeGriglia(4);
+                celle3.setEnabled(true);
+                celle4.setEnabled(false);
+                celle5.setEnabled(true);
+                celle6.setEnabled(true);
+                grigliaGUI.setState(ConfigState.getInstance());
+            }
+            if (a.getSource() == celle5) {
+                resizeGriglia(5);
+                celle3.setEnabled(true);
+                celle4.setEnabled(true);
+                celle5.setEnabled(false);
+                celle6.setEnabled(true);
+                grigliaGUI.setState(ConfigState.getInstance());
+            }
+            if (a.getSource() == celle6) {
+                resizeGriglia(6);
+                celle3.setEnabled(true);
+                celle4.setEnabled(true);
+                celle5.setEnabled(true);
+                celle6.setEnabled(false);
+                grigliaGUI.setState(ConfigState.getInstance());
+            }
+            if (a.getSource() == plsStart) {
+                int choice = 0;
+                indiceSoluzioneAttuale = 0;
+                checkPressCount = 0;
+                if (!grigliaGUI.haSoluzione()) {
+                    JOptionPane.showMessageDialog(null,
+                            "La configurazione selezionata non presenta soluzioni!");
+                }
+                else{
+                        choice = JOptionPane.showConfirmDialog(null,
+                                "La configurazione scelta ammette soluzione\n" +
+                                        "             VUOI SALVARLA?                 ");
+
+                    if (choice == JOptionPane.YES_OPTION) {
+                        salvataggio = new SalvataggioConfigurazione();
+                        salvataggio.salvaConNome(grigliaGUI);
+                    }
+                }
+                plsStart.setEnabled(false);
+                plsCheck.setText("CHECK OFF");
+                grigliaGUI.setControlloAttivo(false);
+                grigliaGUI.abilitaTextField(true);
+                grigliaGUI.abilitaPopup();
+            }
+
+            if(a.getSource() == max_sol){
+                if(grigliaGUI.getState() instanceof ShowSolutionsState)
+                    JOptionPane.showMessageDialog(pannelloGriglia,
+                            "Tornare in fase di gioco o configurazione per \n" +
+                                    "poter cambiare il numero di soluzioni!!!");
+                else {
+                    int nrSol = 0;
+                    for (; ; ) {
+
+                        String input = JOptionPane.showInputDialog
+                                (" Modifica il numero di soluzioni da visualizzare ");
+                        try {
+                            nrSol = Integer.parseInt(input);
+                            break;
+
+                        } catch (RuntimeException e) {
+                            JOptionPane.showMessageDialog(pannelloGriglia, "Inserire un intero!");
+                        }
+                    }
+                    State statoCur = grigliaGUI.getState();
+                    grigliaGUI = new GrigliaGUI(grigliaGUI.getKenken(), grigliaGUI.getMatriceScelte(), nrSol);
+                    pannelloGriglia = grigliaGUI.getPannelloGriglia();
+                    impostaObserver();
+                    grigliaGUI.setState(statoCur);
+                }
+            }
+
+            if (a.getSource() == jmiHelp)
+                JOptionPane.showMessageDialog(null,
+                        "-Puoi personalizzare la difficoltà dalla barra SIZE. \n" +
+                                "-Usa il pulsante CHECK per verificare che tuttu i numeri \n" +
+                                " inseriti nei blocchi rispettino i vincoli. \n" +
+                                "-I numeri all'interno di uno stesso blocco possono ripetersi \n" +
+                                " a patto che non si ripetano sulla riga o sulla colonna! \n" +
+                                "-Usa i pulsanti NEXT e PREVIOUS per navigare tra le soluzioni.");
+
+            if (a.getSource() == jmiApri) {
+                //TODO rivedere bug cella doppia per ripristino da file
+                if (pannelloGriglia != null) {
+                    grigliaGUI.removeCelle();
+                    remove(pannelloGriglia);
+                }
+                grigliaGUI = salvataggio.apri();
+                impostaObserver();
+                grigliaGUI.setState(PlayState.getInstance());
+                pannelloGriglia = grigliaGUI.getPannelloGriglia();
+                add(pannelloGriglia, BorderLayout.CENTER);
+                pannelloGriglia.updateUI();
+            }
+
+            if(a.getSource() == jmiSalva){
+                salvataggio.salva(grigliaGUI);
+            }
+
+            if(a.getSource() == jmiSalvaConNome){
+                salvataggio.salvaConNome(grigliaGUI);
+            }
+
+            if (a.getSource() == plsNext) {
+                if (indiceSoluzioneAttuale == grigliaGUI.getNumSol() - 1)
+                    JOptionPane.showMessageDialog(null, "Sei arrivato all'ultima soluzione");
+                else {
+                    grigliaGUI.mostraSoluzione(indiceSoluzioneAttuale);
+                    indiceSoluzioneAttuale++;
+                }
+            }
+
+            if (a.getSource() == plsPrev) {
+
+                if (indiceSoluzioneAttuale == 0)
+                    JOptionPane.showMessageDialog(null, "Sei arrivato alla prima soluzione");
+                else {
+                    grigliaGUI.mostraSoluzione(indiceSoluzioneAttuale);
+                    indiceSoluzioneAttuale--;
+                }
+            }
+
+            if (a.getSource() == plsCheck) {
+                checkPressCount++;
+                if (checkPressCount % 2 == 1) {
+                    plsCheck.setText("CHECK ON!");
+                    grigliaGUI.setControlloAttivo(true);
+                    grigliaGUI.verificaSoluzione();
+                } else {
+                    plsCheck.setText("CHECK OFF");
+                    grigliaGUI.setControlloAttivo(false);
+                    grigliaGUI.ripristinaSfondo();
+                }
+            }
+        }
+    }
 }
 
 public class KenkenGUI {
     private static final int DEFAULT = 4;
-
     public static void main(String[] args) {
         Finestra finestra = new Finestra(DEFAULT);
         finestra.setVisible(true);
         finestra.setResizable(false);
     }
-
-
 }

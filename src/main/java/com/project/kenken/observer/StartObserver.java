@@ -16,7 +16,12 @@ public class StartObserver implements Observer {
     }
 
     @Override
-    public void update() {
-        plsStart.setEnabled(subject.getState() instanceof PlayState);
+    public void update(boolean running) {
+        if(!running)
+            plsStart.setEnabled(subject.getState() instanceof PlayState);
+        else {
+            plsStart.setEnabled(false);
+            subject.abilitaTextField(true);
+        }
     }
 }

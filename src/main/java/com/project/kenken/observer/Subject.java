@@ -5,6 +5,7 @@ import java.util.List;
 
 public abstract class Subject {
 
+    protected boolean running=false;
     protected List<Observer> observers = new ArrayList<>();
 
     public void attach(Observer observer) {
@@ -17,7 +18,7 @@ public abstract class Subject {
 
     public void notifyObservers() {
         for (Observer observer : observers) {
-            observer.update();
+            observer.update(running);
         }
     }
 }

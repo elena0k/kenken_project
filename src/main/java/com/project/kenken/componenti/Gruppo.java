@@ -3,7 +3,7 @@ package com.project.kenken.componenti;
 import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Gruppo implements Serializable {
+public class Gruppo implements Serializable { //blocchi della griglia
 
     private LinkedList<Coordinate> listaCelle;
     private int vincolo;
@@ -55,16 +55,16 @@ public class Gruppo implements Serializable {
         return operazione;
     }
 
-    public boolean contains(Coordinate cord) {
-        return listaCelle.contains(cord);
-    }
-
     public void setVincolo(int vincolo) {
         this.vincolo = vincolo;
     }
 
     public void setOperazione(String operazione) {
         this.operazione = operazione;
+    }
+
+    public boolean contains(Coordinate cord) {
+        return listaCelle.contains(cord);
     }
 
     @Override

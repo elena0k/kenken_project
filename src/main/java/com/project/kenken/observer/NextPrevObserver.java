@@ -16,7 +16,8 @@ public class NextPrevObserver implements Observer {
     }
 
     @Override
-    public void update() {
+    public void update(boolean running) {
+
         pls.setEnabled(subject.getState() instanceof ShowSolutionsState);
     }
 }

@@ -10,7 +10,6 @@ public class GroupsHistory { //CareTaker
     private final int capacity = 100;
     private Deque<Memento> undoHistory;
     private Deque<Memento> redoHistory;
-    private int currentIndex = -1;
 
     public GroupsHistory() {
         undoHistory = new ArrayDeque<>();
@@ -47,6 +46,4 @@ public class GroupsHistory { //CareTaker
             kenken.setMemento(memento);
         }
     }
-
-
 }

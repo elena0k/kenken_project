@@ -17,7 +17,7 @@ class KenkenGridTest {
     void shouldVerifySolutions(){
         KenkenGrid kenken= new KenkenGrid(3);
         List<Gruppo> gruppi= Utils.templateGroups();
-        kenken.setListaGruppi(gruppi);
+        kenken.setGroupsList(gruppi);
         kenken.risolvi();
         int[][] solution=kenken.getListaSoluzioni().get(0);
         int[][] expectedSolution= {{3,1,2},{2,3,1},{1,2,3}};
