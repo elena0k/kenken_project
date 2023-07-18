@@ -1,13 +1,19 @@
 package com.project.kenken.componenti;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 public class Coordinate implements Serializable {
 
+
+    @JsonProperty("riga")
     private int riga;
+
+    @JsonProperty("colonna")
     private int colonna;
 
-    public Coordinate(int riga, int colonna) {
+    public Coordinate(@JsonProperty("riga") int riga, @JsonProperty("colonna") int colonna) {
         this.riga = riga;
         this.colonna = colonna;
     }

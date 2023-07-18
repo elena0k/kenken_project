@@ -20,7 +20,6 @@ public class SalvataggioJSon implements Salvataggio{
 
     private File fileDiSalvataggio;
     ObjectMapper mapper= new ObjectMapper();
-    SimpleModule celleModule = new SimpleModule();
 
     @Override
     public void salva(GrigliaGUI grigliaGUI) {
@@ -55,13 +54,11 @@ public class SalvataggioJSon implements Salvataggio{
     @Override
     public GrigliaGUI apri() {
         fileDiSalvataggio=impostaFileSalvataggio();
-        celleModule.addDeserializer(List.class, new CelleDeserializer());
-        mapper.registerModule(celleModule);
         try {
             JsonNode node= mapper.readValue(fileDiSalvataggio,JsonNode.class);
             int dim= node.get("dimensione").asInt();
             int maxSol= node.get("max soluzioni").asInt();
-            List<Gruppo> gruppi= mapper.convertValue(node.get("lista gruppi"),new TypeReference<>() {});
+            List<Gruppo> gruppi= mapper.convertValue(node.get("lista gruppi"), new TypeReference<>() {});
             int[][] matriceScelte= mapper.convertValue(node.get("valori inseriti"),int[][].class);
             KenkenGrid kenken= new KenkenGrid(gruppi,dim,maxSol);
             return new GrigliaGUI(kenken,matriceScelte,maxSol);
