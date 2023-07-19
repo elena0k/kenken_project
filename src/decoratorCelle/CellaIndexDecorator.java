@@ -5,28 +5,23 @@ import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 
-public class CellaIndexDecorator extends AbstractCella{
+public class CellaIndexDecorator extends JPanel implements ICella{
 
-    private String stringConstraint;
     private JTextField vincolo;
-
-
-
-    public CellaIndexDecorator(ComponentCella component) {
-        super(component);
-    }
-
-    public void CellaIndexDecorator() {
-        super.impostaTextField();
-        vincolo.setText(stringConstraint);
-        vincolo.setEnabled(false);
+    private ICella wrapped;
+    public CellaIndexDecorator(ICella wrapped)
+    {
+        this.wrapped=wrapped;
         setTextLayoutConfig();
     }
 
+    
     public void setVincolo(int res, String op) {
-        this.stringConstraint= "res"+op;
+        String text= "res"+op;
+        vincolo.setText(text);
     }
 
+    @Override
     public JTextField getText() {
         return wrapped.getText();
     }
