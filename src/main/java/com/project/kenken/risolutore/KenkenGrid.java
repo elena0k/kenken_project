@@ -4,6 +4,7 @@ import com.project.kenken.componenti.Coordinate;
 import com.project.kenken.componenti.Gruppo;
 import com.project.kenken.memento.Memento;
 import com.project.kenken.memento.Originator;
+import com.project.kenken.utils.TemplateKenken;
 import com.project.kenken.utils.Utils;
 
 import java.util.ArrayList;
@@ -253,7 +254,7 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
 
     public static void main(String[] args) {
 
-        List<Gruppo> gruppi=Utils.templateGroups();
+        List<Gruppo> gruppi= TemplateKenken.templateGroupsOneSolution();
 
         KenkenGrid kenken = new KenkenGrid(3, 8);
         kenken.setGroupsList(gruppi);

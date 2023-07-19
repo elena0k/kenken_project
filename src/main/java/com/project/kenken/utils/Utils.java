@@ -126,32 +126,7 @@ public  class Utils {
     }
 
 
-    public static List<Gruppo> templateGroups(){
-        List<Coordinate> allCoord = Utils.generaCoordinate(3);
 
-        LinkedList<Coordinate> l1 = new LinkedList<>();
-        LinkedList<Coordinate> l2 = new LinkedList<>();
-        LinkedList<Coordinate> l3 = new LinkedList<>();
-        LinkedList<Coordinate> l4 = new LinkedList<>();
-        LinkedList<Coordinate> l5 = new LinkedList<>();
-
-        l1.add(allCoord.get(0)); l1.add(allCoord.get(1));
-        l2.add(allCoord.get(2)); l2.add(allCoord.get(5));
-        l3.add(allCoord.get(3)); l3.add(allCoord.get(4)); l3.add(allCoord.get(6));
-        l4.add(allCoord.get(7)); l4.add(allCoord.get(8));
-
-        LinkedList<Gruppo> gruppi = new LinkedList<>();
-
-        Gruppo g1 = new Gruppo(3, "%", l1);
-        Gruppo g2 = new Gruppo(2, "%", l2);
-        Gruppo g3 = new Gruppo(6, "x", l3);
-        Gruppo g4 = new Gruppo(1, "-", l4);
-
-        gruppi.add(g1); gruppi.add(g2);
-        gruppi.add(g3); gruppi.add(g4);
-
-        return gruppi;
-    }
 
     public static int[][] copiaProfondaMatriceInt(int[][] other) {
         int[][] ret = new int[other.length][other.length];
@@ -172,7 +147,7 @@ public  class Utils {
 
     public static void main(String[] args){
 
-        System.out.println(templateGroups());
+        System.out.println(TemplateKenken.templateGroupsOneSolution());
         int[][] other={{3,1,2},{2,3,1},{1,2,3}};
         int[][] copia= copiaProfondaMatriceInt(other);
         copia[0]=new int[3];

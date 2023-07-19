@@ -264,12 +264,15 @@ class Finestra extends JFrame {
                         grigliaGUI.removeCelle();
                         remove(pannelloGriglia);
                     }
+
                     grigliaGUI=tmp;
                     impostaObserver();
-                    grigliaGUI.setState(PlayState.getInstance());
                     pannelloGriglia = grigliaGUI.getPannelloGriglia();
                     add(pannelloGriglia, BorderLayout.CENTER);
+                    grigliaGUI.setState(PlayState.getInstance());
                     pannelloGriglia.updateUI();
+
+
                 }
             }
 

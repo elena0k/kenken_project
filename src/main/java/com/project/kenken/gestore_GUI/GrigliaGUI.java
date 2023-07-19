@@ -37,7 +37,6 @@ public class GrigliaGUI extends Subject {
     private boolean[][] cellaImpostata;
     private JMenuItem inserisci, redo, undo, clear, showSol, resetConfig, resetGame;
     private JPopupMenu popup;
-    //TODO rendere locale
     private Gruppo gruppoTmp;
     private boolean gruppoInserito, controlloAttivo;
     private ArrayList<int[][]> listaSoluzioni;
@@ -75,6 +74,8 @@ public class GrigliaGUI extends Subject {
                 pannelloGriglia.add(grigliaCelle[i][j]);
             }
         }
+        //TODO test
+        //pannelloGriglia.remove(grigliaCelle[1][1]);
     }
 
     public GrigliaGUI(KenkenGrid kenken, int[][] matriceScelte,int maxSol) {
@@ -213,7 +214,8 @@ public class GrigliaGUI extends Subject {
                     if (!verificaColonna(matriceScelte[i][j], j, i,matriceScelte) ||
                             !verificaRiga(matriceScelte[i][j], i, j,matriceScelte)) {
                         grigliaCelle[i][j].mySetBackground(Color.RED);
-                        celle_scorrette.add(new Coordinate(i,j));
+                        if(!celle_scorrette.contains(new Coordinate(i,j)))
+                            celle_scorrette.add(new Coordinate(i,j));
                     }
                 }
             }
@@ -237,7 +239,9 @@ public class GrigliaGUI extends Subject {
 
     private void segnalaGruppo(Gruppo g,List<Coordinate> celle_scorrette) {
         for (Coordinate c : g.getListaCelle()){
-            celle_scorrette.add(new Coordinate(c.getRiga(),c.getColonna()));
+            Coordinate errata=new Coordinate(c.getRiga(),c.getColonna());
+            if(!celle_scorrette.contains(errata))
+                celle_scorrette.add(errata);
             grigliaCelle[c.getRiga()][c.getColonna()].mySetBackground(Color.RED);
         }
     }
