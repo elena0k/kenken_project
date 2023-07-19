@@ -9,6 +9,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 
 public class Cella extends JPanel {
@@ -147,6 +148,8 @@ public class Cella extends JPanel {
     public void setMouseAdapter(MouseAdapter mouseAdapter) {
         text.addMouseListener(mouseAdapter);
     }
+
+    //c void setActionListener(ActionListener actListener) { this.addAncestorListener();}
 
     public void setDocumentListener(DocumentListener doc) {
         text.getDocument().addDocumentListener(doc);

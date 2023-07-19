@@ -10,10 +10,12 @@ public class GroupsHistory { //CareTaker
     private final int capacity = 100;
     private Deque<Memento> undoHistory;
     private Deque<Memento> redoHistory;
+    private KenkenGrid kenken;
 
-    public GroupsHistory() {
+    public GroupsHistory(KenkenGrid kenken) {
         undoHistory = new ArrayDeque<>();
         redoHistory = new ArrayDeque<>();
+        this.kenken=kenken;
     }
 
     public void save(Memento memento) {
@@ -31,7 +33,7 @@ public class GroupsHistory { //CareTaker
         return !redoHistory.isEmpty();
     }
 
-    public void undo(KenkenGrid kenken) {
+    public void undo() {
         if (canUndo()) {
             Memento memento = undoHistory.pop();
             redoHistory.push(kenken.getMemento());
@@ -39,7 +41,7 @@ public class GroupsHistory { //CareTaker
         }
     }
 
-    public void redo(KenkenGrid kenken) {
+    public void redo() {
         if (canRedo()) {
             Memento memento = redoHistory.pop();
             undoHistory.push(kenken.getMemento());

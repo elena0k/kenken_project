@@ -62,7 +62,7 @@ public class GrigliaGUI extends Subject {
         pannelloGriglia.setLayout(new GridLayout(n, n));
         pannelloGriglia.setSize(450, 450);
         gruppoInserito = false;
-        careTaker = new GroupsHistory();
+        careTaker = new GroupsHistory(kenken);
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -74,6 +74,7 @@ public class GrigliaGUI extends Subject {
                 pannelloGriglia.add(grigliaCelle[i][j]);
             }
         }
+        setState(ConfigState.getInstance());
         //TODO test
         //pannelloGriglia.remove(grigliaCelle[1][1]);
     }
@@ -92,7 +93,7 @@ public class GrigliaGUI extends Subject {
         pannelloGriglia = new JPanel();
         pannelloGriglia.setLayout(new GridLayout(n, n));
         pannelloGriglia.setSize(450, 450);
-        careTaker = new GroupsHistory();
+        careTaker = new GroupsHistory(kenken);
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -105,12 +106,21 @@ public class GrigliaGUI extends Subject {
             }
         }
         redraw();
+        setState(ConfigState.getInstance());
     }
 
     private int richiestaNumSoluzioni() {
         int ret = 0;
         for (; ; ) {
-            String input = JOptionPane.showInputDialog("Fornire il numero massimo di soluzioni da visualizzare!");
+            String input = JOptionPane.showInputDialog("BENVENUTO!\n" +
+                    "Questo è il gioco del kenken!\n" +
+                    "Per di iniziare a giocare è necessario configurare la griglia,\n" +
+                    "puoi scegliere se farlo manualmente o aprire una configurazione \n" +
+                    "salvata in precedenza dal menù File \n \n" +
+                    "Indicare il NUMERO MASSIMO DI SOLUZIONI che si desidera poter\n" +
+                    "visualizzare (si noti che tale numero potrà essere cambiato anche \n" +
+                    "durante la fase di configurazione e di gioco) \n" +
+                    "     ");
             try {
                 ret = Integer.parseInt(input);
                 break;
@@ -440,6 +450,8 @@ public class GrigliaGUI extends Subject {
     }
 
     void abilitaPopup() {
+        if(popup==null)
+            costruisciMenuPlay();
         if(haSoluzione())
             showSol.setEnabled(true);
         resetConfig.setEnabled(true);
@@ -473,12 +485,15 @@ public class GrigliaGUI extends Subject {
         matriceTmp= Utils.copiaProfondaMatriceInt(matriceScelte);
     }
 
-    public void ripristinaGioco(){
+    public void ripristinaGioco(int[][] matRipristino){
         for(int i=0; i<n; i++){
             for(int j=0; j<n; j++){
-                grigliaCelle[i][j].mySetText(String.valueOf(matriceTmp[i][j]));
+                grigliaCelle[i][j].mySetText(String.valueOf(matRipristino[i][j]));
                 grigliaCelle[i][j].repaint();
             }
+        }
+        if(!isEmpty(matRipristino)) {
+            running = true;
         }
         pannelloGriglia.repaint();
     }
@@ -490,7 +505,7 @@ public class GrigliaGUI extends Subject {
         public void actionPerformed(ActionEvent a) {
 
             if (a.getSource() == redo) {
-                careTaker.redo(kenken);
+                careTaker.redo();
                 if (!careTaker.canRedo())
                     redo.setEnabled(false);
                 if (careTaker.canUndo())
@@ -500,10 +515,10 @@ public class GrigliaGUI extends Subject {
             }
 
             if (a.getSource() == undo) {
-                careTaker.undo(kenken);
+                careTaker.undo();
                 if (!careTaker.canUndo())
                     undo.setEnabled(false);
-                else
+                if(careTaker.canRedo())
                     redo.setEnabled(true);
                 kenken.printGroups();
                 redraw();
@@ -520,8 +535,7 @@ public class GrigliaGUI extends Subject {
             if (a.getSource() == resetGame) {
                 setState(PlayState.getInstance());
                 redraw();
-                ripristinaGioco();
-                running=true;
+                ripristinaGioco(matriceTmp);
                 showSol.setEnabled(true);
                 resetConfig.setEnabled(true);
                 notifyObservers();

@@ -125,6 +125,15 @@ public  class Utils {
         return true;
     }
 
+    public static boolean isEmpty(int[][] mat){
+        for(int i=0; i<mat.length;i++){
+            for(int j=0; j<mat.length; j++)
+                if(mat[i][j]!=0)
+                    return false;
+        }
+        return true;
+    }
+
 
 
 

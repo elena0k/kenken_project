@@ -6,6 +6,7 @@ import com.project.kenken.observer.StartObserver;
 import com.project.kenken.state.State;
 import com.project.kenken.strategySalvataggio.Salvataggio;
 import com.project.kenken.strategySalvataggio.SalvataggioJSon;
+import com.project.kenken.utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -264,12 +265,14 @@ class Finestra extends JFrame {
                         grigliaGUI.removeCelle();
                         remove(pannelloGriglia);
                     }
-
                     grigliaGUI=tmp;
                     impostaObserver();
                     pannelloGriglia = grigliaGUI.getPannelloGriglia();
                     add(pannelloGriglia, BorderLayout.CENTER);
+                    grigliaGUI.ripristinaGioco(grigliaGUI.getMatriceScelte());
                     grigliaGUI.setState(PlayState.getInstance());
+                    if(!Utils.isEmpty((grigliaGUI.getMatriceScelte())))
+                        grigliaGUI.abilitaPopup();
                     pannelloGriglia.updateUI();
 
 
@@ -288,8 +291,9 @@ class Finestra extends JFrame {
                 if (indiceSoluzioneAttuale == grigliaGUI.getNumSol() - 1)
                     JOptionPane.showMessageDialog(null, "Sei arrivato all'ultima soluzione");
                 else {
-                    grigliaGUI.mostraSoluzione(indiceSoluzioneAttuale);
                     indiceSoluzioneAttuale++;
+                    grigliaGUI.mostraSoluzione(indiceSoluzioneAttuale);
+
                 }
             }
 
