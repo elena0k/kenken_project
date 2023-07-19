@@ -5,7 +5,6 @@ import com.project.kenken.observer.NextPrevObserver;
 import com.project.kenken.observer.StartObserver;
 import com.project.kenken.state.State;
 import com.project.kenken.strategySalvataggio.Salvataggio;
-import com.project.kenken.strategySalvataggio.SalvataggioConfigurazione;
 import com.project.kenken.strategySalvataggio.SalvataggioJSon;
 
 import javax.swing.*;
@@ -17,7 +16,7 @@ class Finestra extends JFrame {
 
     private int n;
     private GrigliaGUI grigliaGUI;
-    private JMenuItem jmiApri, jmiSalva, jmiSalvaConNome,
+    private JMenuItem jmiApri, jmiSalvaGame, jmiSalvaConfig,
             jmiHelp, max_sol, celle3, celle4, celle5, celle6;
     private JPanel pannelloGriglia, pannelloPulsanti;
     private JButton plsCheck, plsPrev, plsNext, plsStart;
@@ -87,13 +86,13 @@ class Finestra extends JFrame {
         fileMenu.add(jmiApri);
         jmiApri.addActionListener(ascoltatore);
 
-        jmiSalva = new JMenuItem("Save");
-        fileMenu.add(jmiSalva);
-        jmiSalva.addActionListener(ascoltatore);
+        jmiSalvaGame = new JMenuItem("Save game");
+        fileMenu.add(jmiSalvaGame);
+        jmiSalvaGame.addActionListener(ascoltatore);
 
-        jmiSalvaConNome = new JMenuItem("Save as");
-        fileMenu.add(jmiSalvaConNome);
-        jmiSalvaConNome.addActionListener(ascoltatore);
+        jmiSalvaConfig = new JMenuItem("Save grid");
+        fileMenu.add(jmiSalvaConfig);
+        jmiSalvaConfig.addActionListener(ascoltatore);
 
         jmbBarra.add(fileMenu);
 
@@ -210,8 +209,8 @@ class Finestra extends JFrame {
                                         "             VUOI SALVARLA?                 ");
 
                     if (choice == JOptionPane.YES_OPTION) {
-                        salvataggio = new SalvataggioConfigurazione();
-                        salvataggio.salvaConNome(grigliaGUI);
+                        salvataggio = new SalvataggioJSon();
+                        salvataggio.salvaConfig(grigliaGUI);
                     }
                 }
                 plsStart.setEnabled(false);
@@ -259,24 +258,27 @@ class Finestra extends JFrame {
 
             if (a.getSource() == jmiApri) {
                 //TODO rivedere bug cella doppia per ripristino da file
-                if (pannelloGriglia != null) {
-                    grigliaGUI.removeCelle();
-                    remove(pannelloGriglia);
+                GrigliaGUI tmp = salvataggio.apri();
+                if(tmp !=null){
+                    if (pannelloGriglia != null) {
+                        grigliaGUI.removeCelle();
+                        remove(pannelloGriglia);
+                    }
+                    grigliaGUI=tmp;
+                    impostaObserver();
+                    grigliaGUI.setState(PlayState.getInstance());
+                    pannelloGriglia = grigliaGUI.getPannelloGriglia();
+                    add(pannelloGriglia, BorderLayout.CENTER);
+                    pannelloGriglia.updateUI();
                 }
-                grigliaGUI = salvataggio.apri();
-                impostaObserver();
-                grigliaGUI.setState(PlayState.getInstance());
-                pannelloGriglia = grigliaGUI.getPannelloGriglia();
-                add(pannelloGriglia, BorderLayout.CENTER);
-                pannelloGriglia.updateUI();
             }
 
-            if(a.getSource() == jmiSalva){
-                salvataggio.salva(grigliaGUI);
+            if(a.getSource() == jmiSalvaGame){
+                salvataggio.salvaGame(grigliaGUI);
             }
 
-            if(a.getSource() == jmiSalvaConNome){
-                salvataggio.salvaConNome(grigliaGUI);
+            if(a.getSource() == jmiSalvaConfig){
+                salvataggio.salvaConfig(grigliaGUI);
             }
 
             if (a.getSource() == plsNext) {

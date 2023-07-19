@@ -22,9 +22,9 @@ public interface Salvataggio {
     }
 
 
-    void salva(GrigliaGUI grigliaGUI);
+    void salvaGame(GrigliaGUI grigliaGUI);
 
-    void salvaConNome(GrigliaGUI grigliaGUI);
+    void salvaConfig(GrigliaGUI grigliaGUI);
 
     GrigliaGUI apri();
 }
