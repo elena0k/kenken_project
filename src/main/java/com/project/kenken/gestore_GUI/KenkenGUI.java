@@ -3,6 +3,7 @@ package com.project.kenken.gestore_GUI;
 import com.project.kenken.observer.CheckObserver;
 import com.project.kenken.observer.NextPrevObserver;
 import com.project.kenken.observer.StartObserver;
+import com.project.kenken.risolutore.KenkenGrid;
 import com.project.kenken.state.State;
 import com.project.kenken.strategySalvataggio.Salvataggio;
 import com.project.kenken.strategySalvataggio.SalvataggioJSon;
@@ -240,11 +241,11 @@ class Finestra extends JFrame {
                             JOptionPane.showMessageDialog(pannelloGriglia, "Inserire un intero!");
                         }
                     }
-                    State statoCur = grigliaGUI.getState();
-                    grigliaGUI = new GrigliaGUI(grigliaGUI.getKenken(), grigliaGUI.getMatriceScelte(), nrSol);
-                    pannelloGriglia = grigliaGUI.getPannelloGriglia();
-                    impostaObserver();
-                    grigliaGUI.setState(statoCur);
+                    KenkenGrid kenken = new KenkenGrid(grigliaGUI.getKenken().getGroups(), grigliaGUI.getKenken().getDim(), nrSol);
+                    grigliaGUI.setKenkenGrid(kenken);
+                    grigliaGUI.setMaxNumSol(nrSol);
+                    grigliaGUI.avviaSoluzione();
+
                 }
             }
 
@@ -258,7 +259,6 @@ class Finestra extends JFrame {
                                 "-Usa i pulsanti NEXT e PREVIOUS per navigare tra le soluzioni.");
 
             if (a.getSource() == jmiApri) {
-                //TODO rivedere bug cella doppia per ripristino da file
                 GrigliaGUI tmp = salvataggio.apri();
                 if(tmp !=null){
                     if (pannelloGriglia != null) {
@@ -291,19 +291,18 @@ class Finestra extends JFrame {
                 if (indiceSoluzioneAttuale == grigliaGUI.getNumSol() - 1)
                     JOptionPane.showMessageDialog(null, "Sei arrivato all'ultima soluzione");
                 else {
-                    indiceSoluzioneAttuale++;
-                    grigliaGUI.mostraSoluzione(indiceSoluzioneAttuale);
+                    grigliaGUI.mostraSoluzione(++indiceSoluzioneAttuale);
 
                 }
             }
 
             if (a.getSource() == plsPrev) {
 
-                if (indiceSoluzioneAttuale == 0)
-                    JOptionPane.showMessageDialog(null, "Sei arrivato alla prima soluzione");
-                else {
+                if (indiceSoluzioneAttuale == 0) {
                     grigliaGUI.mostraSoluzione(indiceSoluzioneAttuale);
-                    indiceSoluzioneAttuale--;
+                    JOptionPane.showMessageDialog(null, "Sei arrivato alla prima soluzione");
+                } else {
+                    grigliaGUI.mostraSoluzione(--indiceSoluzioneAttuale);
                 }
             }
 

@@ -75,8 +75,6 @@ public class GrigliaGUI extends Subject {
             }
         }
         setState(ConfigState.getInstance());
-        //TODO test
-        //pannelloGriglia.remove(grigliaCelle[1][1]);
     }
 
     public GrigliaGUI(KenkenGrid kenken, int[][] matriceScelte,int maxSol) {
@@ -158,6 +156,10 @@ public class GrigliaGUI extends Subject {
     public void setControlloAttivo(boolean attivo) {
         this.controlloAttivo = attivo;
     }
+
+    public void setKenkenGrid(KenkenGrid kenken) { this.kenken=kenken; }
+
+    public void setMaxNumSol(int maxNumSol) { this.maxNumSol=maxNumSol; }
 
     public void setState(State state) {
         this.state = state;

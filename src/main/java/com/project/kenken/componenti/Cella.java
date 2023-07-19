@@ -149,8 +149,6 @@ public class Cella extends JPanel {
         text.addMouseListener(mouseAdapter);
     }
 
-    //c void setActionListener(ActionListener actListener) { this.addAncestorListener();}
-
     public void setDocumentListener(DocumentListener doc) {
         text.getDocument().addDocumentListener(doc);
     }
