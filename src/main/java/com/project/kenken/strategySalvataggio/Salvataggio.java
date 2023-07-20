@@ -7,9 +7,9 @@ import java.io.File;
 
 public interface Salvataggio {
 
-    default File impostaFileSalvataggio(){
+    default File impostaFileSalvataggio() {
 
-        File fileDiSalvataggio=null;
+        File fileDiSalvataggio = null;
         JFileChooser jfc = new JFileChooser();
         try {
             if (jfc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {

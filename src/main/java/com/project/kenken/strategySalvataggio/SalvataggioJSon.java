@@ -10,36 +10,35 @@ import com.project.kenken.risolutore.KenkenGrid;
 
 import javax.swing.*;
 import java.io.File;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
 
-public class SalvataggioJSon implements Salvataggio{
+public class SalvataggioJSon implements Salvataggio {
 
     private File fileDiSalvataggio;
-    ObjectMapper mapper= new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public void salvaGame(GrigliaGUI grigliaGUI) {
-        fileDiSalvataggio=impostaFileSalvataggio();
+        fileDiSalvataggio = impostaFileSalvataggio();
         if (fileDiSalvataggio != null) {
-            scriviOggetto(grigliaGUI,false);
+            scriviOggetto(grigliaGUI, false);
         } else
             JOptionPane.showMessageDialog(null, "Salvataggio non avvenuto");
     }
 
-    private void scriviOggetto(GrigliaGUI grigliaGUI,boolean isConfig) {
-        try{
-            ObjectNode node= mapper.createObjectNode();
-            node.put("dimensione",grigliaGUI.getN());
-            node.put("max soluzioni",grigliaGUI.getKenken().getListaSoluzioni().size());
-            node.set("lista gruppi",mapper.convertValue(grigliaGUI.getKenken().getGroups(), JsonNode.class));
-            int[][] matVuota= new int[grigliaGUI.getN()][grigliaGUI.getN()];
+    private void scriviOggetto(GrigliaGUI grigliaGUI, boolean isConfig) {
+        try {
+            ObjectNode node = mapper.createObjectNode();
+            node.put("dimensione", grigliaGUI.getN());
+            node.put("max soluzioni", grigliaGUI.getKenken().getListaSoluzioni().size());
+            node.set("lista gruppi", mapper.convertValue(grigliaGUI.getKenken().getGroups(), JsonNode.class));
+            int[][] matVuota = new int[grigliaGUI.getN()][grigliaGUI.getN()];
 
-            node.set("valori inseriti", mapper.convertValue(!isConfig? grigliaGUI.getMatriceScelte():matVuota,JsonNode.class));
-            mapper.writeValue(fileDiSalvataggio,node);
+            node.set("valori inseriti", mapper.convertValue(!isConfig ? grigliaGUI.getMatriceScelte() : matVuota, JsonNode.class));
+            mapper.writeValue(fileDiSalvataggio, node);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
                     "ATTENZIONE, impossibile salvare un kenken su questo file.");
             e.printStackTrace();
@@ -47,9 +46,9 @@ public class SalvataggioJSon implements Salvataggio{
     }
 
     public void salvaConfig(GrigliaGUI grigliaGUI) {
-        fileDiSalvataggio=impostaFileSalvataggio();
+        fileDiSalvataggio = impostaFileSalvataggio();
         if (fileDiSalvataggio != null) {
-            scriviOggetto(grigliaGUI,true);
+            scriviOggetto(grigliaGUI, true);
         } else
             JOptionPane.showMessageDialog(null, "Salvataggio non avvenuto");
 

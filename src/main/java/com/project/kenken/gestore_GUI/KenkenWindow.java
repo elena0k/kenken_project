@@ -26,7 +26,6 @@ public class KenkenWindow extends JFrame {
     private int checkPressCount;
 
 
-
     public KenkenWindow(int n) {
         setTitle("KenkenGUI ");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -193,11 +192,10 @@ public class KenkenWindow extends JFrame {
                 if (!grigliaGUI.haSoluzione()) {
                     JOptionPane.showMessageDialog(null,
                             "La configurazione selezionata non presenta soluzioni!");
-                }
-                else{
-                        choice = JOptionPane.showConfirmDialog(null,
-                                "La configurazione scelta ammette soluzione\n" +
-                                        "             VUOI SALVARLA?                 ");
+                } else {
+                    choice = JOptionPane.showConfirmDialog(null,
+                            "La configurazione scelta ammette soluzione\n" +
+                                    "             VUOI SALVARLA?                 ");
 
                     if (choice == JOptionPane.YES_OPTION) {
                         salvataggio = new SalvataggioJSon();
@@ -211,8 +209,8 @@ public class KenkenWindow extends JFrame {
                 grigliaGUI.abilitaPopup();
             }
 
-            if(a.getSource() == max_sol){
-                if(grigliaGUI.getState() instanceof ShowSolutionsState)
+            if (a.getSource() == max_sol) {
+                if (grigliaGUI.getState() instanceof ShowSolutionsState)
                     JOptionPane.showMessageDialog(pannelloGriglia,
                             "Tornare in fase di gioco o configurazione per \n" +
                                     "poter cambiare il numero di soluzioni!!!");
@@ -249,18 +247,18 @@ public class KenkenWindow extends JFrame {
 
             if (a.getSource() == jmiApri) {
                 GrigliaGUI tmp = salvataggio.apri();
-                if(tmp !=null){
+                if (tmp != null) {
                     if (pannelloGriglia != null) {
                         grigliaGUI.removeCelle();
                         remove(pannelloGriglia);
                     }
-                    grigliaGUI=tmp;
+                    grigliaGUI = tmp;
                     impostaObserver();
                     pannelloGriglia = grigliaGUI.getPannelloGriglia();
                     add(pannelloGriglia, BorderLayout.CENTER);
                     grigliaGUI.ripristinaGioco(grigliaGUI.getMatriceScelte());
                     grigliaGUI.setState(PlayState.getInstance());
-                    if(!Utils.isEmpty((grigliaGUI.getMatriceScelte())))
+                    if (!Utils.isEmpty((grigliaGUI.getMatriceScelte())))
                         grigliaGUI.abilitaPopup();
                     pannelloGriglia.updateUI();
 
@@ -268,11 +266,11 @@ public class KenkenWindow extends JFrame {
                 }
             }
 
-            if(a.getSource() == jmiSalvaGame){
+            if (a.getSource() == jmiSalvaGame) {
                 salvataggio.salvaGame(grigliaGUI);
             }
 
-            if(a.getSource() == jmiSalvaConfig){
+            if (a.getSource() == jmiSalvaConfig) {
                 salvataggio.salvaConfig(grigliaGUI);
             }
 

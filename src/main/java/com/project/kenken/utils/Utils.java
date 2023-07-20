@@ -7,13 +7,13 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public  class Utils {
+public class Utils {
 
-    public static List<Coordinate> generaCoordinate(int dim){
-        List<Coordinate> coordinates= new LinkedList<>();
-        for(int i=0; i<dim; i++){
-            for(int j=0; j<dim; j++){
-                coordinates.add(new Coordinate(i,j));
+    public static List<Coordinate> generaCoordinate(int dim) {
+        List<Coordinate> coordinates = new LinkedList<>();
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
+                coordinates.add(new Coordinate(i, j));
             }
         }
         return coordinates;
@@ -94,7 +94,7 @@ public  class Utils {
         return new Coordinate(minR, minC);
     }
 
-    public static boolean verificaGruppo(Gruppo gruppo, int[][]matriceScelte) {
+    public static boolean verificaGruppo(Gruppo gruppo, int[][] matriceScelte) {
         LinkedList<Coordinate> celle = gruppo.getListaCelle();
         Coordinate coord = gruppo.getListaCelle().get(0);
         int risultato = matriceScelte[coord.getRiga()][coord.getColonna()];
@@ -125,25 +125,23 @@ public  class Utils {
         return true;
     }
 
-    public static boolean isEmpty(int[][] mat){
-        for(int i=0; i<mat.length;i++){
-            for(int j=0; j<mat.length; j++)
-                if(mat[i][j]!=0)
+    public static boolean isEmpty(int[][] mat) {
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat.length; j++)
+                if (mat[i][j] != 0)
                     return false;
         }
         return true;
     }
 
-    public static boolean isFull(int[][] mat){
-        for(int i=0; i<mat.length;i++){
-            for(int j=0; j<mat.length; j++)
-                if(mat[i][j]==0)
+    public static boolean isFull(int[][] mat) {
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat.length; j++)
+                if (mat[i][j] == 0)
                     return false;
         }
         return true;
     }
-
-
 
 
     public static int[][] copiaProfondaMatriceInt(int[][] other) {

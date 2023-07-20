@@ -15,7 +15,7 @@ public class GroupsHistory { //CareTaker
     public GroupsHistory(KenkenGrid kenken) {
         undoHistory = new ArrayDeque<>();
         redoHistory = new ArrayDeque<>();
-        this.kenken=kenken;
+        this.kenken = kenken;
     }
 
     public void save(Memento memento) {

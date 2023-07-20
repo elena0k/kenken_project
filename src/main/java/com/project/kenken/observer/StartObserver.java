@@ -17,7 +17,7 @@ public class StartObserver implements Observer {
 
     @Override
     public void update(boolean running) {
-        if(!running)
+        if (!running)
             plsStart.setEnabled(subject.getState() instanceof PlayState);
         else {
             plsStart.setEnabled(false);

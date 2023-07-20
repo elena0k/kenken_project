@@ -4,7 +4,6 @@ import com.project.kenken.componenti.Coordinate;
 import com.project.kenken.componenti.Gruppo;
 import com.project.kenken.memento.Memento;
 import com.project.kenken.memento.Originator;
-import com.project.kenken.utils.TemplateKenken;
 import com.project.kenken.utils.Utils;
 
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
 
     private int[][] griglia;
     private int dim;
-    private int nrSol=0;
+    private int nrSol = 0;
     private ArrayList<int[][]> listaSoluzioni;
     private LinkedList<Gruppo> listaGruppi;
 
@@ -35,35 +34,37 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
         listaGruppi = new LinkedList<>();
     }
 
-    public KenkenGrid(List<Gruppo> groups,int dim,int maxSol){
-        this(dim,maxSol);
-        for(int i=0;i<groups.size();i++)
+    public KenkenGrid(List<Gruppo> groups, int dim, int maxSol) {
+        this(dim, maxSol);
+        for (int i = 0; i < groups.size(); i++)
             this.listaGruppi.add(new Gruppo(groups.get(i)));
     }
 
-    public KenkenGrid(KenkenGrid other){
-        this.griglia=Utils.copiaProfondaMatriceInt(other.griglia);
-        this.dim= other.dim;
-        this.nrSol= other.nrSol;
-        this.listaGruppi= new LinkedList<>();
-        this.listaSoluzioni=new ArrayList<>();
-        for(int i=0;i<other.listaGruppi.size();i++)
+    public KenkenGrid(KenkenGrid other) {
+        this.griglia = Utils.copiaProfondaMatriceInt(other.griglia);
+        this.dim = other.dim;
+        this.nrSol = other.nrSol;
+        this.listaGruppi = new LinkedList<>();
+        this.listaSoluzioni = new ArrayList<>();
+        for (int i = 0; i < other.listaGruppi.size(); i++)
             this.listaGruppi.add(new Gruppo(other.listaGruppi.get(i)));
-        for(int i=0;i<other.listaSoluzioni.size();i++)
+        for (int i = 0; i < other.listaSoluzioni.size(); i++)
             this.listaSoluzioni.add(Utils.copiaProfondaMatriceInt(other.listaSoluzioni.get(i)));
-
-
 
 
     }
 
-    public int getDim(){return this.dim;}
+    public int getDim() {
+        return this.dim;
+    }
 
-    public int getNrSol() {return nrSol;}
+    public int getNrSol() {
+        return nrSol;
+    }
 
-    public ArrayList<int[][]> getListaSoluzioni(){
-        ArrayList<int[][]> ret= new ArrayList<>();
-        for(int i=0;i<listaSoluzioni.size();i++)
+    public ArrayList<int[][]> getListaSoluzioni() {
+        ArrayList<int[][]> ret = new ArrayList<>();
+        for (int i = 0; i < listaSoluzioni.size(); i++)
             ret.add(Utils.copiaProfondaMatriceInt(listaSoluzioni.get(i)));
         return ret;
     }
@@ -72,8 +73,8 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
         return Utils.copiaProfondaMatriceInt(this.griglia);
     }
 
-    public void setGroupsList(List<Gruppo> gruppi){
-        for(int i=0; i<gruppi.size();i++){
+    public void setGroupsList(List<Gruppo> gruppi) {
+        for (int i = 0; i < gruppi.size(); i++) {
             this.listaGruppi.add(new Gruppo(gruppi.get(i)));
         }
     }
@@ -216,7 +217,6 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
     }
 
 
-
     @Override
     public Memento getMemento() {
         return new GruppiMemento();
@@ -235,10 +235,10 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
     }
 
 
-
     private class GruppiMemento implements Memento {
 
         LinkedList<Gruppo> listaGruppi;
+
         KenkenGrid getOriginator() {
             return KenkenGrid.this;
         }
