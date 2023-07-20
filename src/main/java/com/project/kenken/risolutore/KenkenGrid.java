@@ -250,19 +250,4 @@ public class KenkenGrid extends Problema<Integer, Integer> implements Originator
             }
         }
     }
-
-
-    public static void main(String[] args) {
-
-        List<Gruppo> gruppi= TemplateKenken.templateGroupsOneSolution();
-
-        KenkenGrid kenken = new KenkenGrid(3, 8);
-        kenken.setGroupsList(gruppi);
-        System.out.println("Impostati"+kenken.getGroups());
-
-        kenken.risolvi();
-        System.out.println(kenken.getNrSol());
-    }
-
-
 }

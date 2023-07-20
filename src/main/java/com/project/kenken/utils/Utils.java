@@ -134,6 +134,15 @@ public  class Utils {
         return true;
     }
 
+    public static boolean isFull(int[][] mat){
+        for(int i=0; i<mat.length;i++){
+            for(int j=0; j<mat.length; j++)
+                if(mat[i][j]==0)
+                    return false;
+        }
+        return true;
+    }
+
 
 
 
@@ -153,19 +162,4 @@ public  class Utils {
             System.out.println("\n");
         }
     }
-
-    public static void main(String[] args){
-
-        System.out.println(TemplateKenken.templateGroupsOneSolution());
-        int[][] other={{3,1,2},{2,3,1},{1,2,3}};
-        int[][] copia= copiaProfondaMatriceInt(other);
-        copia[0]=new int[3];
-        System.out.println("copia");
-        printMatrice(copia);
-        System.out.println("originale");
-        printMatrice(other);
-
-    }
-
-
 }

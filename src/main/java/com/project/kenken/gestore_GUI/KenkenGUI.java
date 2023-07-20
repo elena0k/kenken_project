@@ -132,16 +132,6 @@ class Finestra extends JFrame {
 
     }
 
-    public void reimpostaFinestra(int nrSol){
-        remove(pannelloGriglia);
-        State statoCur=grigliaGUI.getState();
-        grigliaGUI = new GrigliaGUI(grigliaGUI.getKenken(),grigliaGUI.getMatriceScelte(), nrSol);
-        pannelloGriglia = grigliaGUI.getPannelloGriglia();
-        add(pannelloGriglia, BorderLayout.CENTER);
-        impostaObserver();
-        grigliaGUI.setState(statoCur);
-        pannelloGriglia.updateUI();
-    }
 
     public void resizeGriglia(int size) {
         remove(pannelloGriglia);

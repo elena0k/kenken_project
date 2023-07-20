@@ -215,9 +215,13 @@ public class GrigliaGUI extends Subject {
             val = 0;
         else val = Integer.parseInt(cella.getText());
         matriceScelte[i][j] = val;
+        if(Utils.isFull(matriceScelte) && verificaSoluzione().size()==0
+                && (state instanceof PlayState))
+            JOptionPane.showMessageDialog(pannelloGriglia, "    KEN-GRATULATIONS!    \n" +
+                    "     Hai risolto il puzzle! ");
     }
 
-    List<Coordinate> verificaSoluzione() {
+    List<Coordinate> verificaSoluzione() {  //restituisco la lista delle coordinate delle celle da evidenziare
         List<Coordinate> celle_scorrette= new LinkedList<>();
         rispettaVincoli(celle_scorrette);
         for (int i = 0; i < n; i++) {
@@ -232,6 +236,7 @@ public class GrigliaGUI extends Subject {
                 }
             }
         }
+
         return celle_scorrette;
     }
 
