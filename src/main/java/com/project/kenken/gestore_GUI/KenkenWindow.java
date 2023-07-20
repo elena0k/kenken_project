@@ -4,7 +4,6 @@ import com.project.kenken.observer.CheckObserver;
 import com.project.kenken.observer.NextPrevObserver;
 import com.project.kenken.observer.StartObserver;
 import com.project.kenken.risolutore.KenkenGrid;
-import com.project.kenken.state.State;
 import com.project.kenken.strategySalvataggio.Salvataggio;
 import com.project.kenken.strategySalvataggio.SalvataggioJSon;
 import com.project.kenken.utils.Utils;
@@ -14,7 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-class Finestra extends JFrame {
+public class KenkenWindow extends JFrame {
 
     private int n;
     private GrigliaGUI grigliaGUI;
@@ -28,7 +27,7 @@ class Finestra extends JFrame {
 
 
 
-    public Finestra(int n) {
+    public KenkenWindow(int n) {
         setTitle("KenkenGUI ");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         AscoltatoreEventi actListener = new AscoltatoreEventi();
@@ -312,11 +311,3 @@ class Finestra extends JFrame {
     }
 }
 
-public class KenkenGUI {
-    private static final int DEFAULT = 4;
-    public static void main(String[] args) {
-        Finestra finestra = new Finestra(DEFAULT);
-        finestra.setVisible(true);
-        finestra.setResizable(false);
-    }
-}
